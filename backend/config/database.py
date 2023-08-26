@@ -39,5 +39,4 @@ class SQLite:
         
         
     def selectUsers(self):
-        users = self.cursor.fetchall()
-        return users    
+        return self.cursor.f  
