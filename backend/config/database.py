@@ -1,42 +1,11 @@
-import sqlite3
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-class SQLite:
-    def __init__(self):
-        self.conn = sqlite3.connect('cloudinvest.db')
-        self.cursor = self.conn.cursor()
+SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_planelife.db"
 
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 
-    def create_tables(self):
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS 
-                                    user(
-                                        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                                        name VARCHAR(50) NOT NULL, 
-                                        user VARCHAR(10));
-                            ''')  
-        
-    def insert(self):
-        self.cursor.execute(''' 
-                            INSERT INTO user(name, user) VALUES ('Pedro Louzada', 'pelu')
-                            ''');  
-        
-        self.cursor.execute(''' 
-                            INSERT INTO user(name, user) VALUES ('Yago Giroud', 'yaguinho99')
-                            ''');  
-        
-        self.cursor.execute(''' 
-                            INSERT INTO user(name, user) VALUES ('Jesco Pereira', 'pjesco87')
-                            ''');  
-        
-        self.cursor.execute(''' 
-                            INSERT INTO user(name, user) VALUES ('Marcela Oliveira', 'mahzinha88')
-                            ''');  
-        
-        self.cursor.execute(''' 
-                            INSERT INTO user(name, user) VALUES ('João Cristiano', 'joaozin7')
-                            ''');  
-        
-        self.conn.commit()
-        
-        
-    def selectUsers(self):
-        return self.cursor.f  
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()

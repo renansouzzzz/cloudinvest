@@ -1,33 +1,24 @@
-from typing import Union
-
+from msilib import schema
 from fastapi import FastAPI
-from pydantic import BaseModel
-import config.database as db
+
+from .config.database import SessionLocal, engine
+from sqlalchemy.orm import Session
+
+from . import models
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-sqlite = db.SQLite
 
-def __init__(self):
-    sqlite.__init__(sqlite)
-    sqlite.create_tables(sqlite)
-    sqlite.insert(sqlite)
-    self.select = sqlite.selectUsers(sqlite)
+@app.get("/users")
+def get_user(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.id == user_id).first()
 
-class User(BaseModel):
-    name: str
-    user: str
-    
-@app.get("/")
-async def getUsers():
-    select = await sqlite.selectUsers()
-    
-    return select
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-if __name__ == "__main__":
-    __init__(sqlite)
-    
+@app.post("/users/create")
+def create_user(db: Session, user: schema.UserCreate):
+    hash_password = user.password + "notreallyhashed"
+    db_user = models.User(email=user.email, hash_password=hash_password)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user  
