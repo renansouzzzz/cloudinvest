@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI, status
 from sqlalchemy.orm import Session
 
-from backend.schemas import UserCreate
+from backend.schemas import UserCreate, UserUpdate
 
 from .config.database import get_db, Base, engine
 
@@ -22,3 +22,8 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     return user
+
+@app.put("/users/update/<int:id>", status_code=status.HTTP_202_ACCEPTED)
+def update_user(payload: UserUpdate, id: int, db: Session = Depends(get_db)):
+    updated = User(**payload.dict())
+    selected = db.get(id)
