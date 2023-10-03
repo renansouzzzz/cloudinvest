@@ -1,31 +1,24 @@
-from fastapi import Depends, FastAPI
-from fastapi.responses import JSONResponse
-
-
-from .config.database import SessionLocal, engine
+from fastapi import Depends, FastAPI, status
 from sqlalchemy.orm import Session
 
-from . import models
+from backend.schemas import UserCreate
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
+from .config.database import get_db, Base, engine
+
+from .models import UserTeste, User
         
-    finally:
-        db.close()
-    
 app = FastAPI()
 
-@app.get("/users")
-def get_user(db: Session = Depends(get_db)):
-    return JSONResponse(content=db.query(models.User).all()) 
+Base.metadata.create_all(engine)
 
-@app.post("/users/create")
-def create_user(db: Session, user: models.User.email):
-    hash_password = user.password + "notreallyhashed"
-    db_user = models.User(email=user.email, hash_password=hash_password)
-    db.add(db_user)
+@app.get("/users")
+async def get_user(db: Session = Depends(get_db)):
+    return db.query(UserTeste).all() 
+
+@app.post("/users/create", status_code=status.HTTP_201_CREATED)
+def create_user(payload: UserCreate, db: Session = Depends(get_db)):
+    user = User(**payload.dict())
+    db.add(user)
     db.commit()
-    db.refresh(db_user)
-    return db_user  
+    db.refresh(user)
+    return user
