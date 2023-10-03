@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI, status
 from sqlalchemy.orm import Session
+from fastapi_utils.guid_type import GUID
 
 from backend.schemas import UserCreate, UserUpdate
 
@@ -23,7 +24,11 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db)):
     db.refresh(user)
     return user
 
-@app.put("/users/update/<int:id>", status_code=status.HTTP_202_ACCEPTED)
-def update_user(payload: UserUpdate, id: int, db: Session = Depends(get_db)):
+@app.put("/users/update/{id}", status_code=status.HTTP_202_ACCEPTED)
+def update_user(payload: UserUpdate, id: GUID, db: Session = Depends(get_db)):
     updated = User(**payload.dict())
-    selected = db.get(id)
+    db.query(f'UPDATE users SET name = {updated.name}, email = {updated.email}, password = {updated.password} where id = {id}')
+    db.execute()
+    db.commit()
+    db.refresh()
+    return updated
