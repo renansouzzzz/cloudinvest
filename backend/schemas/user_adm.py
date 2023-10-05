@@ -4,7 +4,6 @@ class UserAdm(BaseModel):
     name: str
     email: str
     password: str
-    
 
 class UserAdmUpdate(UserAdm):
     pass

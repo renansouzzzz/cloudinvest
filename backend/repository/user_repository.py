@@ -5,7 +5,7 @@ from backend.schemas.user import UserCreate, UserUpdate
 
 from ..config.database import Base, engine
 
-from ..models.models import UserMapped, User
+from ..models.models import UserMapped, UserAdmSchema
         
 app = FastAPI()
 
@@ -17,7 +17,7 @@ def get():
 
 def create(payload: UserCreate):
     with Session(engine) as session:
-        user = User(**payload.dict())
+        user = UserAdmSchema(**payload.dict())
         session.add(user)
         session.commit()
         session.refresh(user)
@@ -25,7 +25,7 @@ def create(payload: UserCreate):
 
 def update(user: UserUpdate, id: int):
     with Session(engine) as session:
-        getUserById = session.query(User).filter(User.id == id).one_or_none()
+        getUserById = session.query(UserAdmSchema).filter(UserAdmSchema.id == id).one_or_none()
         if not getUserById:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
         for var, value in vars(user).items():
@@ -37,7 +37,7 @@ def update(user: UserUpdate, id: int):
 
 def delete(id: int):
     with Session(engine) as session:
-        getUser = session.get(User, id)
+        getUser = session.get(UserAdmSchema, id)
         if not getUser:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
         session.delete(getUser)
