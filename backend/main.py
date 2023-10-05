@@ -8,7 +8,7 @@ from .repository import user_repository, user_adm_repository
 
 app = FastAPI(
     title="PlaneLife API",
-    description="API -> ReactNative",
+    description="API > ReactNative",
     openapi_url="/api/v1/"
 )
 
