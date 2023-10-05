@@ -25,13 +25,15 @@ def create(payload: UserCreate):
 
 def update(user: UserUpdate, id: int):
     with Session(engine) as session:
-        session_user = session.query(User).filter(User.id == id).one_or_none()
+        getUserById = session.query(User).filter(User.id == id).one_or_none()
+        if not getUserById:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado!")
         for var, value in vars(user).items():
-            setattr(session_user, var, value)
-        session.add(session_user)
+            setattr(getUserById, var, value)
+        session.add(getUserById)
         session.commit()
-        session.refresh(session_user)
-        return session_user
+        session.refresh(getUserById)
+        return getUserById
 
 def delete(id: int):
     with Session(engine) as session:
