@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, String, Integer
 from ..config.database import Base
 
 
-class User(Base):
+class UserSchema(Base):
     __tablename__ = "user"
     
     id = Column(Integer, primary_key=True, index=True)
@@ -11,7 +11,7 @@ class User(Base):
     password = Column(String)
     active = Column(Boolean, default=True)
     
-class UserAdm(Base):
+class UserAdmSchema(Base):
     __tablename__ = "user_adm"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -22,9 +22,9 @@ class UserAdm(Base):
     permission = Column(Boolean, default=False)
     
     
-class UserMapped(User):
+class UserMapped(UserSchema):
     pass
     
-class UserAdmMapped(UserAdm):
+class UserAdmMapped(UserAdmSchema):
     pass
     
