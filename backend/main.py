@@ -31,8 +31,8 @@ def delete_user(id: int):
         return user_repository.delete(id)
 
 
-
 # user adm --------------------------------------
+
 @app.get("/users-adm", tags=['UserAdm'])
 def get_user_adm():
         return user_adm_repository.get()
