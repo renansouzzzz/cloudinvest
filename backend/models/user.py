@@ -1,18 +1,24 @@
-from sqlalchemy import Boolean, Column, String, Integer, Enum
-from ..config.database import Base
-from ..schemas.user import TypeProfileEnumDTO
+from pydantic import BaseModel
+
+from enum import Enum
 
 
-class UserSchema(Base):
-    __tablename__ = "user"
+class TypeProfileEnumDTO(Enum):
+    Devedor = 0
+    Intermediario = 1
+    Investidor = 2
+
+class User(BaseModel):
+    name: str
+    email: str
+    password: str
+    type_profile: TypeProfileEnumDTO
     
-    id = Column(Integer, primary_key=True, index=True, nullable=False)
-    name = Column(String(100), nullable=False)
-    email = Column(String(50), unique=True, nullable=False)
-    password = Column(String(18), nullable=False)
-    active = Column(Boolean, default=True)
-    type_profile: TypeProfileEnumDTO = Column(Enum(TypeProfileEnumDTO))
-    
-    
-class UserMapped(UserSchema):
-    pass  
+
+class UserUpdate(User):
+    pass
+
+class UserCreate(User):
+
+    class Config:
+        orm_mode = True

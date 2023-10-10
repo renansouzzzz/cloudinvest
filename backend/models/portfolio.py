@@ -1,14 +1,14 @@
-from sqlalchemy import Column, Integer, Numeric, ForeignKey
-from ..config.database import Base
-    
+from pydantic import BaseModel
 
-class PortfolioSchema(Base):
-    __tablename__ = "portfolio"
+class Portfolio(BaseModel):
+    name: str
+    id_user: int
+    current_balace: float
+    total_balance: float
+    installment: int
+    
+class PortfolioCreate(Portfolio):
+    pass
 
-    id = Column(Integer, primary_key=True, index=True, nullable=False)
-    id_user = Column(ForeignKey('user.id'), nullable=False)
-    total_balance = Column(Numeric(18,2), nullable=False)
-    
-    
-class PortfolioMapped(PortfolioSchema): 
+class PortfolioUpdate(Portfolio):
     pass
