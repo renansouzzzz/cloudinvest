@@ -1,11 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
-from backend.schemas.user_adm import UserAdm, UserAdmCreate, UserAdmUpdate
+from backend.models.user_adm import UserAdm, UserAdmCreate, UserAdmUpdate
 
 from ..config.database import Base, engine
 
-from ..models.user_adm import UserAdmMapped, UserAdmSchema
+from ..schemas.user_adm import UserAdmMapped, UserAdmSchema
         
 app = FastAPI()
 
@@ -18,7 +18,7 @@ def get():
 
 def create(payload: UserAdmCreate):
     with Session(engine) as session:
-        user = UserAdm(**payload.dict())
+        user = UserAdmSchema(**payload.dict())
         session.add(user)
         session.commit()
         session.refresh(user)
