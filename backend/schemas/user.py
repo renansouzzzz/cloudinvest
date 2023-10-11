@@ -14,7 +14,7 @@ class UserSchema(Base):
     active = Column(Boolean, default=True)
     type_profile: TypeProfileEnumDTO = Column(Enum(TypeProfileEnumDTO))
     
-    portfolio = relationship("PortfolioSchema", back_populates="user")
+    #portfolio = relationship("PortfolioSchema", back_populates="user")
 
     
 class UserMapped(UserSchema):

@@ -3,9 +3,10 @@ from fastapi import FastAPI, status
 from backend.models.user import UserCreate, UserUpdate
 from backend.models.user_adm import UserAdmCreate, UserAdmUpdate
 from backend.models.portfolio import PortfolioCreate, PortfolioUpdate
+from backend.models.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
 
 from .config.database import Base, engine
-from .repository import user_repository, user_adm_repository, portfolio_repository
+from .repository import user_repository, user_adm_repository, portfolio_repository, portfolio_datas_repository
 
 app = FastAPI(
     title="PlaneLife API",
@@ -59,3 +60,13 @@ def get_portfolio(id: int):
 @app.post('/portfolio/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio'])
 def create_portfolio(payload: PortfolioCreate):
         portfolio_repository.create(payload)
+        
+        
+# portfolio datas controller ------------
+@app.get('/portfolio-datas', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+def get_portfolio_datas():
+        return portfolio_datas_repository.get()
+
+@app.post('/portfolio-datas/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio Datas'])
+def create_portfolio_datas(payload: PortfolioDatasCreate):
+        return portfolio_datas_repository.create(payload)
