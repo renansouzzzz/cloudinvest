@@ -34,12 +34,14 @@ def update(user: UserUpdate, id: int):
         session.commit()
         session.refresh(getUserById)
         return getUserById
-
+    
+    """_delete apenas desativa o campo ACTIVE_
+    """
 def delete(id: int):
     with Session(engine) as session:
-        getUser = session.get(UserSchema, id)
-        if not getUser:
-            raise HTTPException(status_code=404, detail="Usuário não encontrado!")
-        session.delete(getUser)
+        # getUser = session.get(UserSchema, id)
+        # if not getUser:
+        #     raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+        session.execute(f"UPDATE user SET active = false where id = {id}")
         session.commit()  
         return "Deletado com sucesso!"    
