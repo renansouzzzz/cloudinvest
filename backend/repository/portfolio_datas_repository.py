@@ -1,14 +1,10 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from ..config.database import Base, engine
+from ..config.database import engine
 
 from ..schemas.portfolio_datas import PortfolioDatasMapped, PortfolioDatasSchema
         
-app = FastAPI()
-
-Base.metadata.create_all(engine)
-
 
 def get():
     with Session(engine) as session:
@@ -21,3 +17,12 @@ def create(payload: PortfolioDatasSchema):
         session.commit()
         session.refresh(portfolioDatas)
         return portfolioDatas
+    
+def delete(int: id):
+    with Session(engine) as session:
+        getPortfolioData = session.get(PortfolioDatasSchema, id)
+        if not getPortfolioData:
+            raise HTTPException(status_code=404, detail="Informação não encontrada!")
+        session.execute(f"UPDATE port_datas SET active = false WHERE id = {id}")
+        session.commit()  
+        return "Informação deletada com sucesso!"  

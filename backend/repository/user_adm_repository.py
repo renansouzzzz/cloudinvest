@@ -1,15 +1,11 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from backend.models.user_adm import UserAdm, UserAdmCreate, UserAdmUpdate
 
-from ..config.database import Base, engine
+from ..config.database import engine
 
 from ..schemas.user_adm import UserAdmMapped, UserAdmSchema
-        
-app = FastAPI()
-
-Base.metadata.create_all(engine)
 
 
 def get():
@@ -43,4 +39,4 @@ def delete(id: int):
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
         session.delete(getUser)
         session.commit()  
-        return "Deletado com sucesso!"    
+        return "Usuário deletado com sucesso!"    

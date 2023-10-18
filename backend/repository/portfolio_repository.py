@@ -1,13 +1,8 @@
-from fastapi import FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
-from ..config.database import Base, engine
+from ..config.database import engine
 
 from ..schemas.portfolio import PortfolioMapped, PortfolioSchema
-        
-app = FastAPI()
-
-Base.metadata.create_all(engine)
 
 
 def get(id : int):

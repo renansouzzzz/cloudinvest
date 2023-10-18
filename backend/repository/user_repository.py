@@ -1,15 +1,11 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from backend.models.user import UserCreate, UserUpdate
 from ..schemas.user import UserMapped, UserSchema, UserSchema
 
-from ..config.database import Base, engine
+from ..config.database import engine
 
-        
-app = FastAPI()
-
-Base.metadata.create_all(engine)
 
 def get():
     with Session(engine) as session:
@@ -23,6 +19,7 @@ def create(payload: UserCreate):
         session.refresh(user)
         return user
 
+
 def update(user: UserUpdate, id: int):
     with Session(engine) as session:
         getUserById = session.query(UserSchema).filter(UserSchema.id == id).one_or_none()
@@ -35,13 +32,14 @@ def update(user: UserUpdate, id: int):
         session.refresh(getUserById)
         return getUserById
     
-    """_delete apenas desativa o campo ACTIVE_
+    """
+    _delete apenas desativa o campo ACTIVE_
     """
 def delete(id: int):
     with Session(engine) as session:
-        # getUser = session.get(UserSchema, id)
-        # if not getUser:
-        #     raise HTTPException(status_code=404, detail="Usuário não encontrado!")
-        session.execute(f"UPDATE user SET active = false where id = {id}")
+        getUser = session.get(UserSchema, id)
+        if not getUser:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+        session.execute(f"UPDATE user SET active = false WHERE id = {id}")
         session.commit()  
         return "Deletado com sucesso!"    
