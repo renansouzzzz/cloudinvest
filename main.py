@@ -5,8 +5,8 @@ from models.user_adm import UserAdmCreate, UserAdmUpdate
 from models.portfolio import PortfolioCreate, PortfolioUpdate
 from models.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
 
-from .config.database import Base, engine
-from .repository import user_repository, user_adm_repository, portfolio_repository, portfolio_datas_repository
+from config.database import Base, engine
+from repository import user_repository, user_adm_repository, portfolio_repository, portfolio_datas_repository
 
 app = FastAPI(
     title="PlaneLife API",

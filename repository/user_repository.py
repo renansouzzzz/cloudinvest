@@ -2,9 +2,9 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from models.user import UserCreate, UserUpdate
-from ..schemas.user import UserMapped, UserSchema, UserSchema
+from schemas.user import UserMapped, UserSchema, UserSchema
 
-from ..config.database import engine
+from config.database import engine
 
 
 def get():

@@ -3,9 +3,9 @@ from sqlalchemy.orm import Session
 
 from models.user_adm import UserAdm, UserAdmCreate, UserAdmUpdate
 
-from ..config.database import engine
+from config.database import engine
 
-from ..schemas.user_adm import UserAdmMapped, UserAdmSchema
+from schemas.user_adm import UserAdmMapped, UserAdmSchema
 
 
 def get():

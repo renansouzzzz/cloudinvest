@@ -1,9 +1,9 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from ..config.database import engine
+from config.database import engine
 
-from ..schemas.portfolio_datas import PortfolioDatasMapped, PortfolioDatasSchema
+from schemas.portfolio_datas import PortfolioDatasMapped, PortfolioDatasSchema
         
 
 def get():

@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, String, Integer, Enum
-from ..config.database import Base
-from ..models.user import TypeProfileEnumDTO
+from config.database import Base
+from models.user import TypeProfileEnumDTO
 from sqlalchemy.orm import relationship
 
 
