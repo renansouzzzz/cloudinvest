@@ -1,28 +1,28 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from backend.models.user_adm import UserAdm, UserAdmCreate, UserAdmUpdate
+from models.user import UserCreate, UserUpdate
+from ..schemas.user import UserMapped, UserSchema, UserSchema
 
 from ..config.database import engine
-
-from ..schemas.user_adm import UserAdmMapped, UserAdmSchema
 
 
 def get():
     with Session(engine) as session:
-        return session.query(UserAdmMapped).all()  
+        return session.query(UserMapped).all()  
 
-def create(payload: UserAdmCreate):
+def create(payload: UserCreate):
     with Session(engine) as session:
-        user = UserAdmSchema(**payload.dict())
+        user = UserSchema(**payload.dict())
         session.add(user)
         session.commit()
         session.refresh(user)
         return user
 
-def update(user: UserAdmUpdate, id: int):
+
+def update(user: UserUpdate, id: int):
     with Session(engine) as session:
-        getUserById = session.query(UserAdmSchema).filter(UserAdmSchema.id == id).one_or_none()
+        getUserById = session.query(UserSchema).filter(UserSchema.id == id).one_or_none()
         if not getUserById:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
         for var, value in vars(user).items():
@@ -31,12 +31,15 @@ def update(user: UserAdmUpdate, id: int):
         session.commit()
         session.refresh(getUserById)
         return getUserById
-
+    
+    """
+    _delete apenas desativa o campo ACTIVE_
+    """
 def delete(id: int):
     with Session(engine) as session:
-        getUser = session.get(UserAdmSchema, id)
+        getUser = session.get(UserSchema, id)
         if not getUser:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
-        session.delete(getUser)
+        session.execute(f"UPDATE user SET active = false WHERE id = {id}")
         session.commit()  
-        return "Usuário deletado com sucesso!"    
+        return "Deletado com sucesso!"    
