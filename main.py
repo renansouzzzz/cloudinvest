@@ -20,6 +20,10 @@ Base.metadata.create_all(engine)
 def get_user():
         return user_repository.get()
 
+@app.get("/users/{id}", tags=['User'])
+def get_user(id: int):
+        return user_repository.getById(id)
+
 @app.post("/users/create", status_code=status.HTTP_201_CREATED, tags=['User'])
 def create_user(payload: UserCreate):
         return user_repository.create(payload)
