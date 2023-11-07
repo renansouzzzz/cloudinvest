@@ -1,28 +1,28 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from backend.models.user import UserCreate, UserUpdate
-from ..schemas.user import UserMapped, UserSchema, UserSchema
+from models.user_adm import UserAdm, UserAdmCreate, UserAdmUpdate
 
-from ..config.database import engine
+from config.database import engine
+
+from schemas.user_adm import UserAdmMapped, UserAdmSchema
 
 
 def get():
     with Session(engine) as session:
-        return session.query(UserMapped).all()  
+        return session.query(UserAdmMapped).all()  
 
-def create(payload: UserCreate):
+def create(payload: UserAdmCreate):
     with Session(engine) as session:
-        user = UserSchema(**payload.dict())
+        user = UserAdmSchema(**payload.dict())
         session.add(user)
         session.commit()
         session.refresh(user)
         return user
 
-
-def update(user: UserUpdate, id: int):
+def update(user: UserAdmUpdate, id: int):
     with Session(engine) as session:
-        getUserById = session.query(UserSchema).filter(UserSchema.id == id).one_or_none()
+        getUserById = session.query(UserAdmSchema).filter(UserAdmSchema.id == id).one_or_none()
         if not getUserById:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
         for var, value in vars(user).items():
@@ -31,15 +31,12 @@ def update(user: UserUpdate, id: int):
         session.commit()
         session.refresh(getUserById)
         return getUserById
-    
-    """
-    _delete apenas desativa o campo ACTIVE_
-    """
+
 def delete(id: int):
     with Session(engine) as session:
-        getUser = session.get(UserSchema, id)
+        getUser = session.get(UserAdmSchema, id)
         if not getUser:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
-        session.execute(f"UPDATE user SET active = false WHERE id = {id}")
+        session.delete(getUser)
         session.commit()  
-        return "Deletado com sucesso!"    
+        return "Usuário deletado com sucesso!"    

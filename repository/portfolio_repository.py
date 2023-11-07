@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
-from ..config.database import engine
+from config.database import engine
 
-from ..schemas.portfolio import PortfolioMapped, PortfolioSchema
+from schemas.portfolio import PortfolioMapped, PortfolioSchema
 
 
 def get(id : int):

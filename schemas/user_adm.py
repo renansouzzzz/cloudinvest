@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, String, Integer
-from ..config.database import Base
+from config.database import Base
 
 
 class UserAdmSchema(Base):
