@@ -8,11 +8,26 @@ from models.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
 from config.database import Base, engine
 from repository import user_repository, user_adm_repository, portfolio_repository, portfolio_datas_repository
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(
     title="PlaneLife API",
     description="API > ReactNative",
-    openapi_url="/api/v1/"
 )
+
+origins = [
+    "http://localhost:8081/",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 Base.metadata.create_all(engine)
 
