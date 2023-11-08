@@ -12,7 +12,7 @@ class User(BaseModel):
     name: str
     email: str
     password: str
-    type_profile: TypeProfileEnumDTO
+    #type_profile: TypeProfileEnumDTO
     
 
 class UserUpdate(User):
