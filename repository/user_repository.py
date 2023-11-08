@@ -9,7 +9,11 @@ from config.database import engine
 
 def get():
     with Session(engine) as session:
-        return session.query(UserMapped).all()  
+        return session.query(UserMapped).all()
+
+def getById(id: int):
+    with Session(engine) as session:
+        return session.get(UserMapped, id) 
 
 def create(payload: UserCreate):
     with Session(engine) as session:

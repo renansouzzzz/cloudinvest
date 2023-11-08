@@ -8,17 +8,36 @@ from models.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
 from config.database import Base, engine
 from repository import user_repository, user_adm_repository, portfolio_repository, portfolio_datas_repository
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(
     title="PlaneLife API",
     description="API > ReactNative",
-    openapi_url="/api/v1/"
 )
+
+origins = [
+    "*",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 Base.metadata.create_all(engine)
 
 @app.get("/users", tags=['User'])
 def get_user():
         return user_repository.get()
+
+@app.get("/users/{id}", tags=['User'])
+def get_user(id: int):
+        return user_repository.getById(id)
 
 @app.post("/users/create", status_code=status.HTTP_201_CREATED, tags=['User'])
 def create_user(payload: UserCreate):
