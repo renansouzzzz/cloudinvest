@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 from enum import Enum
 
@@ -10,9 +10,9 @@ class TypeProfileEnumDTO(Enum):
 
 class User(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     password: str
-    type_profile: TypeProfileEnumDTO
+    #type_profile: TypeProfileEnumDTO
     
 
 class UserUpdate(User):

@@ -8,7 +8,7 @@ from models.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
 from config.database import Base, engine
 from repository import user_repository, user_adm_repository, portfolio_repository, portfolio_datas_repository
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -32,7 +32,7 @@ app.add_middleware(
 Base.metadata.create_all(engine)
 
 @app.get("/users", tags=['User'])
-def get_user():
+async def get_user():
         return user_repository.get()
 
 @app.get("/users/{id}", tags=['User'])
