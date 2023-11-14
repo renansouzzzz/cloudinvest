@@ -8,7 +8,7 @@ from models.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
 from config.database import Base, engine
 from repository import user_repository, user_adm_repository, portfolio_repository, portfolio_datas_repository
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
