@@ -1,22 +1,18 @@
-from pydantic import BaseModel, EmailStr, validator
+from pydantic import BaseModel, EmailStr, Field
 
 from enum import Enum
-
-from models.validators.user_validator import UserValidation
 
 
 class TypeProfileEnumDTO(Enum):
     Devedor = 0
     Intermediario = 1
-    Investidor = 2
-
-class User(UserValidation):
-    name: str
+    Investidor = 2    
+        
+class User(BaseModel):
+    name: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
-    password: str
-    #type_profile: TypeProfileEnumDTO
+    password: str = Field(..., regex='^(?=.*\d).{8,}$')
 
-    
 class UserUpdate(User):
     pass
 
