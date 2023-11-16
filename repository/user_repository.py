@@ -36,6 +36,17 @@ def update(user: UserUpdate, id: int):
         session.refresh(getUserById)
         return getUserById
     
+def updateTypeProfile(id: int, typeProfile: int):
+    with Session(engine) as session:
+        getUser = session.get(UserSchema, id)
+        if not getUser:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+        if typeProfile not in (0,1,2):
+            raise HTTPException(status_code=404, detail="Tipo de perfil não existente!")
+        session.execute(f"UPDATE user SET type_profile = {typeProfile} WHERE id = {id}")
+        session.commit()  
+        return "Perfil de usuário atualizado com sucesso!"
+    
     """
     _delete apenas desativa o campo ACTIVE_
     """
