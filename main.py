@@ -2,8 +2,8 @@ from fastapi import FastAPI, status
 
 from models.user import UserCreate, UserUpdate
 from models.user_adm import UserAdmCreate, UserAdmUpdate
-from models.portfolio import PortfolioCreate, PortfolioUpdate
-from models.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
+from models.portfolio import PortfolioCreate
+from models.portfolio_datas import PortfolioDatasCreate
 
 from config.database import Base, engine
 from repository import user_repository, user_adm_repository, portfolio_repository, portfolio_datas_repository
@@ -46,6 +46,10 @@ def create_user(payload: UserCreate):
 @app.put("/users/update/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['User'])
 def update_user(user: UserUpdate, id: int):
         return user_repository.update(user, id)
+
+@app.put("/users/update-type-profile/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['User'])
+def update_type_profile_user(id: int, typeProfile: int):
+        return user_repository.updateTypeProfile(id, typeProfile)
 
 @app.delete('/users/delete/{id}', tags=['User'])
 def delete_user(id: int):       
