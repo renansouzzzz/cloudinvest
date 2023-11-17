@@ -12,10 +12,10 @@ class UserSchema(Base):
     email = Column(String(50), unique=True, nullable=False)
     password = Column(String(18), nullable=False)
     active = Column(Boolean, default=True)
-    # type_profile: TypeProfileEnumDTO = Column(Enum(TypeProfileEnumDTO), nullable=False)
+    
     
     #portfolio = relationship("PortfolioSchema", back_populates="user")
 
     
 class UserMapped(UserSchema):
-    pass  
+    type_profile: TypeProfileEnumDTO = Column(Enum(TypeProfileEnumDTO), nullable=True)  

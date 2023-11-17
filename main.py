@@ -1,6 +1,6 @@
 from fastapi import FastAPI, status
 
-from models.user import UserCreate, UserUpdate
+from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile
 from models.user_adm import UserAdmCreate, UserAdmUpdate
 from models.portfolio import PortfolioCreate
 from models.portfolio_datas import PortfolioDatasCreate
@@ -48,7 +48,7 @@ def update_user(user: UserUpdate, id: int):
         return user_repository.update(user, id)
 
 @app.put("/users/update-type-profile/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['User'])
-def update_type_profile_user(id: int, typeProfile: int):
+def update_type_profile_user(id: int, typeProfile: UserUpdateTypeProfile):
         return user_repository.updateTypeProfile(id, typeProfile)
 
 @app.delete('/users/delete/{id}', tags=['User'])
