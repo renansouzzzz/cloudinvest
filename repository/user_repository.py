@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from models.user import UserCreate, UserUpdate
+from models.user import UserCreate, UserUpdate, TypeProfileEnumDTO, UserUpdateTypeProfile
 from schemas.user import UserMapped, UserSchema, UserSchema
 
 from config.database import engine
@@ -18,33 +18,43 @@ def getById(id: int):
 def create(payload: UserCreate):
     with Session(engine) as session:
         user = UserSchema(**payload.dict())
+        
         session.add(user)
         session.commit()
         session.refresh(user)
+        
         return user
 
 
 def update(user: UserUpdate, id: int):
     with Session(engine) as session:
         getUserById = session.query(UserSchema).filter(UserSchema.id == id).one_or_none()
+        
         if not getUserById:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+        
         for var, value in vars(user).items():
             setattr(getUserById, var, value)
+            
         session.add(getUserById)
         session.commit()
         session.refresh(getUserById)
+        
         return getUserById
     
-def updateTypeProfile(id: int, typeProfile: int):
+def updateTypeProfile(id: int, user: UserUpdateTypeProfile):
     with Session(engine) as session:
-        getUser = session.get(UserSchema, id)
-        if not getUser:
+        getUserById = session.query(UserMapped).filter(UserMapped.id == id).one_or_none()
+        if not getUserById:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
-        if typeProfile not in (0,1,2):
+        
+        if user.type_profile not in (0,1,2):
             raise HTTPException(status_code=404, detail="Tipo de perfil não existente!")
-        session.execute(f"UPDATE user SET type_profile = {typeProfile} WHERE id = {id}")
-        session.commit()  
+        
+        getUserById.type_profile = user.type_profile
+        session.commit()
+        session.refresh(getUserById)
+         
         return "Perfil de usuário atualizado com sucesso!"
     
     """
@@ -55,6 +65,8 @@ def delete(id: int):
         getUser = session.get(UserSchema, id)
         if not getUser:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+        
         session.execute(f"UPDATE user SET active = false WHERE id = {id}")
         session.commit()  
+        
         return "Deletado com sucesso!"    
