@@ -48,7 +48,7 @@ def updateTypeProfile(id: int, user: UserUpdateTypeProfile):
         if not getUserById:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
         
-        if user.type_profile not in (TypeProfileEnumDTO):
+        if user.type_profile not in (0,1,2):
             raise HTTPException(status_code=404, detail="Tipo de perfil não existente!")
         
         getUserById.type_profile = user.type_profile
