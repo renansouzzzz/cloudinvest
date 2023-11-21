@@ -1,15 +1,11 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from backend.schemas.user_adm import UserAdm, UserAdmCreate, UserAdmUpdate
+from models.user_adm import UserAdm, UserAdmCreate, UserAdmUpdate
 
-from ..config.database import Base, engine
+from config.database import engine
 
-from ..models.models import UserAdmMapped, User
-        
-app = FastAPI()
-
-Base.metadata.create_all(engine)
+from schemas.user_adm import UserAdmMapped, UserAdmSchema
 
 
 def get():
@@ -18,7 +14,7 @@ def get():
 
 def create(payload: UserAdmCreate):
     with Session(engine) as session:
-        user = UserAdm(**payload.dict())
+        user = UserAdmSchema(**payload.dict())
         session.add(user)
         session.commit()
         session.refresh(user)
@@ -26,21 +22,21 @@ def create(payload: UserAdmCreate):
 
 def update(user: UserAdmUpdate, id: int):
     with Session(engine) as session:
-        session_user = session.query(UserAdm).filter(UserAdm.id == id).one_or_none()
-        if not session_user:
+        getUserById = session.query(UserAdmSchema).filter(UserAdmSchema.id == id).one_or_none()
+        if not getUserById:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
         for var, value in vars(user).items():
-            setattr(session_user, var, value)
-        session.add(session_user)
+            setattr(getUserById, var, value)
+        session.add(getUserById)
         session.commit()
-        session.refresh(session_user)
-        return session_user
+        session.refresh(getUserById)
+        return getUserById
 
 def delete(id: int):
     with Session(engine) as session:
-        getUser = session.get(UserAdm, id)
+        getUser = session.get(UserAdmSchema, id)
         if not getUser:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
         session.delete(getUser)
         session.commit()  
-        return "Deletado com sucesso!"    
+        return "Usuário deletado com sucesso!"    

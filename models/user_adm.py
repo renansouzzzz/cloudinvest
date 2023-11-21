@@ -1,14 +1,14 @@
 from pydantic import BaseModel
 
-class User(BaseModel):
+class UserAdm(BaseModel):
     name: str
     email: str
     password: str
 
-class UserUpdate(User):
+class UserAdmUpdate(UserAdm):
     pass
 
-class UserCreate(User):
+class UserAdmCreate(UserAdm):
 
     class Config:
         orm_mode = True
