@@ -11,8 +11,11 @@ def get(id : int):
     
 def create(payload: PortfolioSchema):
     with Session(engine) as session:
+        
         portfolio = PortfolioMapped(**payload.dict())
+        
         session.add(portfolio)
         session.commit()
         session.refresh(portfolio)
+        
         return portfolio

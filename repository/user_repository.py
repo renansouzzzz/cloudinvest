@@ -17,6 +17,7 @@ def getById(id: int):
 
 def create(payload: UserCreate):
     with Session(engine) as session:
+        
         user = UserSchema(**payload.dict())
         
         session.add(user)
@@ -28,6 +29,7 @@ def create(payload: UserCreate):
 
 def update(user: UserUpdate, id: int):
     with Session(engine) as session:
+        
         getUserById = session.query(UserSchema).filter(UserSchema.id == id).one_or_none()
         
         if not getUserById:
@@ -44,7 +46,9 @@ def update(user: UserUpdate, id: int):
     
 def updateTypeProfile(id: int, user: UserUpdateTypeProfile):
     with Session(engine) as session:
+        
         getUserById = session.query(UserMapped).filter(UserMapped.id == id).one_or_none()
+        
         if not getUserById:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
         
@@ -62,7 +66,9 @@ def updateTypeProfile(id: int, user: UserUpdateTypeProfile):
     """
 def delete(id: int):
     with Session(engine) as session:
+        
         getUser = session.get(UserSchema, id)
+        
         if not getUser:
             raise HTTPException(status_code=404, detail="Usuário não encontrado!")
         
