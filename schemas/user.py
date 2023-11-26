@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 
 class UserSchema(Base):
-    __tablename__ = "user"
+    __tablename__ = 'user'
     __table_args__ = {
         'mysql_engine': 'InnoDB'
     }
@@ -17,7 +17,8 @@ class UserSchema(Base):
     active = Column(Boolean, default=True)
     
     
-    portfolio = relationship("PortfolioSchema", back_populates="user")
+    portfolio_datas = relationship('PortfolioDatasSchema', back_populates='user', cascade='all, delete', passive_deletes=True)
+    portfolio = relationship('PortfolioSchema', back_populates='user', cascade='all, delete', passive_deletes=True)
 
     
 class UserMapped(UserSchema):
