@@ -11,7 +11,7 @@ class PortfolioDatasSchema(Base):
     }
 
     id = Column(Integer, primary_key=True, index=True, nullable=False)
-    id_user = Column(Integer, ForeignKey('user.id'), nullable=False)
+    id_user = Column(Integer,  ForeignKey('user.id'), nullable=False, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
     tag: TagDatasPortfolio = Column(Enum(TagDatasPortfolio))
     installment = Column(Integer, nullable=False)
