@@ -14,6 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(
     title="PlaneLife API",
     description="API > ReactNative",
+    debug=True
 )
 
 origins = [

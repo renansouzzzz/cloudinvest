@@ -1,3 +1,5 @@
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from config.database import engine
@@ -11,11 +13,14 @@ def get(id : int):
     
 def create(payload: PortfolioSchema):
     with Session(engine) as session:
+        try:
+            portfolio = PortfolioMapped(**payload.dict())
+            
+            session.add(portfolio)
+            session.commit()
+            session.refresh(portfolio)    
+        except IntegrityError as e:
+            raise HTTPException(status_code=400, detail="Chave estrangeira não encontrada")
         
-        portfolio = PortfolioMapped(**payload.dict())
-        
-        session.add(portfolio)
-        session.commit()
-        session.refresh(portfolio)
         
         return portfolio
