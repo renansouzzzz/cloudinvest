@@ -32,4 +32,4 @@ def delete(int: id):
         session.execute(f"UPDATE port_datas SET active = false WHERE id = {id}")
         session.commit() 
          
-        return "Informação deletada com sucesso!"  
+        return "Informação deletada com sucesso!"
