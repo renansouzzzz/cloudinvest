@@ -1,3 +1,5 @@
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from config.database import engine
@@ -12,7 +14,14 @@ def get(id : int):
 def create(payload: PortfolioSchema):
     with Session(engine) as session:
         portfolio = PortfolioMapped(**payload.dict())
-        session.add(portfolio)
-        session.commit()
-        session.refresh(portfolio)
+        
+        try:
+            session.add(portfolio)
+            session.commit()
+            session.refresh(portfolio)    
+            
+        except IntegrityError as e:
+            session.rollback()
+            raise HTTPException(status_code=400, detail=f"Error: {e}")
+        
         return portfolio

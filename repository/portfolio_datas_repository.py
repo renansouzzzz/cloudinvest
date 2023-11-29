@@ -12,17 +12,24 @@ def get():
     
 def create(payload: PortfolioDatasSchema):
     with Session(engine) as session:
+        
         portfolioDatas = PortfolioDatasMapped(**payload.dict())
+        
         session.add(portfolioDatas)
         session.commit()
         session.refresh(portfolioDatas)
+        
         return portfolioDatas
     
 def delete(int: id):
     with Session(engine) as session:
+        
         getPortfolioData = session.get(PortfolioDatasSchema, id)
+        
         if not getPortfolioData:
             raise HTTPException(status_code=404, detail="Informação não encontrada!")
+        
         session.execute(f"UPDATE port_datas SET active = false WHERE id = {id}")
-        session.commit()  
-        return "Informação deletada com sucesso!"  
+        session.commit() 
+         
+        return "Informação deletada com sucesso!"
