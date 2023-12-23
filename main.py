@@ -63,6 +63,10 @@ def delete_user(id: int):
 def get_user_adm():
         return user_adm_repository.get()
 
+@app.get("/users-adm/{id}", tags=['UserAdm'])
+def get_user_adm(id: int):
+        return user_adm_repository.getById(id)
+
 @app.post("/users-adm/create", status_code=status.HTTP_201_CREATED, tags=['UserAdm'])
 def create_user_adm(payload: UserAdmCreate):
         return user_adm_repository.create(payload)
@@ -90,6 +94,10 @@ def create_portfolio(payload: PortfolioCreate):
 @app.get('/portfolio-datas', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def get_portfolio_datas():
         return portfolio_datas_repository.get()
+
+@app.get('/portfolio-datas/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+def get_portfolio_datas(id: int):
+        return portfolio_datas_repository.getById(id)
 
 @app.post('/portfolio-datas/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio Datas'])
 def create_portfolio_datas(payload: PortfolioDatasCreate):

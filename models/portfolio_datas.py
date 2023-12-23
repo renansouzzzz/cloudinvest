@@ -10,10 +10,11 @@ class TagDatasPortfolio(Enum):
 
 class PortfolioDatas(BaseModel):
     name: str
-    id_user: int
+    id_portfolio: int
     value: float
     tag: TagDatasPortfolio
     installment: int
+    
     
 class PortfolioDatasCreate(PortfolioDatas):
     pass

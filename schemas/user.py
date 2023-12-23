@@ -15,10 +15,6 @@ class UserSchema(Base):
     email = Column(String(50), unique=True, nullable=False)
     password = Column(String(18), nullable=False)
     active = Column(Boolean, default=True)
-    
-    
-    portfolio_datas = relationship('PortfolioDatasSchema', back_populates='user', cascade='all, delete', passive_deletes=True)
-    portfolio = relationship('PortfolioSchema', back_populates='user', cascade='all, delete', passive_deletes=True)
 
     
 class UserMapped(UserSchema):
