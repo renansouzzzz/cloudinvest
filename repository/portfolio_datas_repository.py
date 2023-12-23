@@ -10,6 +10,10 @@ def get():
     with Session(engine) as session:
         return session.query(PortfolioDatasMapped).all()  
     
+def getById(id: int):
+    with Session(engine) as session:
+        return session.get(PortfolioDatasMapped, id) 
+    
 def create(payload: PortfolioDatasSchema):
     with Session(engine) as session:
         

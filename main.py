@@ -95,6 +95,10 @@ def create_portfolio(payload: PortfolioCreate):
 def get_portfolio_datas():
         return portfolio_datas_repository.get()
 
+@app.get('/portfolio-datas/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+def get_portfolio_datas(id: int):
+        return portfolio_datas_repository.getById(id)
+
 @app.post('/portfolio-datas/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio Datas'])
 def create_portfolio_datas(payload: PortfolioDatasCreate):
         return portfolio_datas_repository.create(payload)
