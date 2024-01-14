@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import logging
 
-DATABASE_URL = "mysql://root:ChBa3fhH5bA6CGGHHEdBDa1A5G5bcbFF@viaduct.proxy.rlwy.net:31118/railway"
+DATABASE_URL = 'mysql://root:ChBa3fhH5bA6CGGHHEdBDa1A5G5bcbFF@viaduct.proxy.rlwy.net:31118/railway'
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
