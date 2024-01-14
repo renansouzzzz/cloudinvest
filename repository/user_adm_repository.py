@@ -14,7 +14,7 @@ def get():
     
 def getById(id: int):
     with Session(engine) as session:
-        return session.get(UserAdmMapped, id)
+        return session.get(UserAdmMapped, id) 
 
 def create(payload: UserAdmCreate):
     with Session(engine) as session:
