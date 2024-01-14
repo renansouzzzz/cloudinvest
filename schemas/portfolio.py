@@ -10,13 +10,13 @@ class PortfolioSchema(Base):
     }
 
     id = Column(Integer, primary_key=True, index=True, nullable=False)
-    id_user = Column(Integer, ForeignKey('user.id', onupdate='CASCADE'), nullable=False, unique=True)
+    id_user = Column(Integer, ForeignKey('user.id', onupdate='CASCADE'), nullable=False)
     name = Column(String(100), nullable=False)
     total_balance = Column(Numeric(18,2), nullable=False)
     active = Column(Boolean, nullable=False, default=True)
     
-    user = relationship('UserSchema', back_populates='portfolio')
-
+    user = relationship('UserSchema')
     
+        
 class PortfolioMapped(PortfolioSchema):
     pass

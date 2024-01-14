@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class Portfolio(BaseModel):
-    name: str
+    name: str = Field(..., min_length=3, max_length=30)
     id_user: int
     total_balance: float
     

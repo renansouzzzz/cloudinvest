@@ -11,6 +11,10 @@ from schemas.user_adm import UserAdmMapped, UserAdmSchema
 def get():
     with Session(engine) as session:
         return session.query(UserAdmMapped).all()  
+    
+def getById(id: int):
+    with Session(engine) as session:
+        return session.get(UserAdmMapped, id) 
 
 def create(payload: UserAdmCreate):
     with Session(engine) as session:
