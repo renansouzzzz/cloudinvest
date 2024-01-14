@@ -3,12 +3,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import logging
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_planelife.db"
+DATABASE_URL = "mysql://root:ChBa3fhH5bA6CGGHHEdBDa1A5G5bcbFF@viaduct.proxy.rlwy.net:31118/railway"
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
