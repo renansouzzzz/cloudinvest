@@ -11,6 +11,7 @@ from repository import user_repository, user_adm_repository, portfolio_repositor
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+
 app = FastAPI(
     title='PlaneLife API',
     description='API > ReactNative',

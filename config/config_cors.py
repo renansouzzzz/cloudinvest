@@ -1,9 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from decouple import config
+
+CORS_URL = config('CORS_URL')
 
 app = FastAPI()
 
 origins = [
+    CORS_URL,
     'http://localhost:8081/',
 ]
 
