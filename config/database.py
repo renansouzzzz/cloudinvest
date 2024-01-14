@@ -4,12 +4,12 @@ from sqlalchemy.orm import sessionmaker
 import logging
 from decouple import config
 
-DATABASE_URL = config('DATABASE_URL')
+#DATABASE_URL = config('DATABASE_URL')
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine('mysql+pymysql://renan:1234@localhost:3306/plane-life')
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
