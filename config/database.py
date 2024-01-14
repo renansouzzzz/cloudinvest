@@ -9,7 +9,7 @@ DATABASE_URL = config('DATABASE_URL')
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine('mysql://root:DBGhB5eF3eheDfEEAhFFb1dFB-c-c5Bg@viaduct.proxy.rlwy.net:29159/railway')
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
