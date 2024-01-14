@@ -2,8 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import logging
+from decouple import config
 
-DATABASE_URL = 'mysql://root:DBGhB5eF3eheDfEEAhFFb1dFB-c-c5Bg@viaduct.proxy.rlwy.net:29159/railway'
+DATABASE_URL = config('DATABASE_URL')
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
