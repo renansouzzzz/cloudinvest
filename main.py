@@ -1,4 +1,5 @@
 from fastapi import FastAPI, status
+import uvicorn
 
 from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile
 from models.user_adm import UserAdmCreate, UserAdmUpdate
@@ -103,3 +104,7 @@ def get_portfolio_datas(id: int):
 @app.post('/portfolio-datas/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio Datas'])
 def create_portfolio_datas(payload: PortfolioDatasCreate):
         return portfolio_datas_repository.create(payload)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=10000)
