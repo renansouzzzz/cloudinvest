@@ -1,3 +1,4 @@
+from MySQLdb import IntegrityError
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
@@ -29,30 +30,39 @@ def create(payload: UserAdmCreate):
 
 def update(user: UserAdmUpdate, id: int):
     with Session(engine) as session:
-        
-        getUserById = session.query(UserAdmSchema).filter(UserAdmSchema.id == id).one_or_none()
-        
-        if not getUserById:
-            raise HTTPException(status_code=404, detail="Usuário não encontrado!")
-        
-        for var, value in vars(user).items():
-            setattr(getUserById, var, value)
             
-        session.add(getUserById)
-        session.commit()
-        session.refresh(getUserById)
+        try:
+            getUserById = session.query(UserAdmSchema).filter(UserAdmSchema.id == id).one_or_none()
+            
+            if not getUserById:
+                raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+            
+            for var, value in vars(user).items():
+                setattr(getUserById, var, value)
+                
+            session.add(getUserById)
+            session.commit()
+            session.refresh(getUserById)
+        
+        except IntegrityError as e:
+            session.rollback()
+            raise HTTPException(status_code=400, detail=f'Error on database: {e}')
         
         return getUserById
 
 def delete(id: int):
     with Session(engine) as session:
+        try:
+            getUser = session.get(UserAdmSchema, id)
+            
+            if not getUser:
+                raise HTTPException(status_code=404, detail='Usuário não encontrado!')
+            
+            session.delete(getUser)
+            session.commit()  
         
-        getUser = session.get(UserAdmSchema, id)
-        
-        if not getUser:
-            raise HTTPException(status_code=404, detail="Usuário não encontrado!")
-        
-        session.delete(getUser)
-        session.commit()  
+        except IntegrityError as e:
+            session.rollback()
+            raise HTTPException(status_code=400, detail=f'Error on database: {e}')
         
         return "Usuário deletado com sucesso!"    
