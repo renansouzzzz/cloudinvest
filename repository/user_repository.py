@@ -1,3 +1,4 @@
+from MySQLdb import IntegrityError
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
@@ -29,36 +30,45 @@ def create(payload: UserCreate):
 
 def update(user: UserUpdate, id: int):
     with Session(engine) as session:
-        
-        getUserById = session.query(UserSchema).filter(UserSchema.id == id).one_or_none()
-        
-        if not getUserById:
-            raise HTTPException(status_code=404, detail="Usuário não encontrado!")
-        
-        for var, value in vars(user).items():
-            setattr(getUserById, var, value)
+        try:
+            getUserById = session.query(UserSchema).filter(UserSchema.id == id).one_or_none()
             
-        session.add(getUserById)
-        session.commit()
-        session.refresh(getUserById)
+            if not getUserById:
+                raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+            
+            for var, value in vars(user).items():
+                setattr(getUserById, var, value)
+                
+            session.add(getUserById)
+            session.commit()
+            session.refresh(getUserById)
+            
+        except IntegrityError as e:
+            session.rollback()
+            raise HTTPException(status_code=400, detail=f'Error on database: {e}')
         
         return getUserById
     
 def updateTypeProfile(id: int, user: UserUpdateTypeProfile):
     with Session(engine) as session:
         
-        getUserById = session.query(UserMapped).filter(UserMapped.id == id).one_or_none()
+        try:
+            getUserById = session.query(UserMapped).filter(UserMapped.id == id).one_or_none()
+            
+            if not getUserById:
+                raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+            
+            if user.type_profile not in TypeProfileEnumDTO:
+                raise HTTPException(status_code=404, detail="Tipo de perfil não existente!")
+            
+            getUserById.type_profile = user.type_profile
+            session.commit()
+            session.refresh(getUserById)
         
-        if not getUserById:
-            raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+        except IntegrityError as e:
+            session.rollback()
+            raise HTTPException(status_code=400, detail=f'Error on database: {e}')
         
-        if user.type_profile not in TypeProfileEnumDTO:
-            raise HTTPException(status_code=404, detail="Tipo de perfil não existente!")
-        
-        getUserById.type_profile = user.type_profile
-        session.commit()
-        session.refresh(getUserById)
-         
         return "Perfil de usuário atualizado com sucesso!"
     
     """
@@ -66,13 +76,17 @@ def updateTypeProfile(id: int, user: UserUpdateTypeProfile):
     """
 def delete(id: int):
     with Session(engine) as session:
+        try:
+            getUser = session.get(UserSchema, id)
+            
+            if not getUser:
+                raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+            
+            session.execute(f"UPDATE user SET active = false WHERE id = {id}")
+            session.commit()     
         
-        getUser = session.get(UserSchema, id)
-        
-        if not getUser:
-            raise HTTPException(status_code=404, detail="Usuário não encontrado!")
-        
-        session.execute(f"UPDATE user SET active = false WHERE id = {id}")
-        session.commit()  
+        except IntegrityError as e:
+            session.rollback()
+            raise HTTPException(status_code=400, detail=f'Error on database: {e}')
         
         return "Deletado com sucesso!"    
