@@ -89,7 +89,7 @@ def get_portfolio(id: int):
 
 @app.post('/portfolio/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio'])
 def create_portfolio(payload: PortfolioCreate):
-        portfolio_repository.create(payload)
+        return portfolio_repository.create(payload)
         
         
 # portfolio datas controller ------------
