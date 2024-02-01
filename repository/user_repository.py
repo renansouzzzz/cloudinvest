@@ -31,8 +31,8 @@ def create(payload: UserCreate):
         
         user = UserSchema(**payload.dict())
         
-        # user.password = fernet.encrypt(user.password.encode())
-        # decMessage = fernet.decrypt(encMessage).decode()
+        user.password = fernet.encrypt(user.password.encode())
+        user.password = fernet.decrypt(user.password).decode()
         session.add(user)
         session.commit()
         session.refresh(user)
