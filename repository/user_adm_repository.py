@@ -2,20 +2,26 @@ from MySQLdb import IntegrityError
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from models.user_adm import UserAdm, UserAdmCreate, UserAdmUpdate
+from models.user_adm import UserAdmCreate, UserAdmUpdate
 
 from config.database import engine
 
 from schemas.user_adm import UserAdmMapped, UserAdmSchema
 
 
-def get():
+def getAll():
     with Session(engine) as session:
-        return session.query(UserAdmMapped).all()  
+        data = session.query(UserAdmMapped).all()
+        if data is None:
+            raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+        return data
     
 def getById(id: int):
     with Session(engine) as session:
-        return session.get(UserAdmMapped, id) 
+        data = session.get(UserAdmMapped, id)
+        if data is None:
+            raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+        return data
 
 def create(payload: UserAdmCreate):
     with Session(engine) as session:

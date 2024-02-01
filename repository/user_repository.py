@@ -6,21 +6,33 @@ from models.user import UserCreate, UserUpdate, TypeProfileEnumDTO, UserUpdateTy
 from schemas.user import UserMapped, UserSchema, UserSchema
 
 from config.database import engine
+from cryptography.fernet import Fernet
 
 
-def get():
+key = Fernet.generate_key()
+fernet = Fernet(key)
+
+def getAll():
     with Session(engine) as session:
-        return session.query(UserMapped).all()
+        data = session.query(UserMapped).all()
+        if data is None:
+            raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+        return data
 
 def getById(id: int):
     with Session(engine) as session:
-        return session.get(UserMapped, id) 
+        data = session.get(UserMapped, id)
+        if data is None:
+            raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+        return data
 
 def create(payload: UserCreate):
     with Session(engine) as session:
         
         user = UserSchema(**payload.dict())
         
+        # user.password = fernet.encrypt(user.password.encode())
+        # decMessage = fernet.decrypt(encMessage).decode()
         session.add(user)
         session.commit()
         session.refresh(user)

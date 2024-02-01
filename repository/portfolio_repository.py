@@ -7,9 +7,13 @@ from config.database import engine
 from schemas.portfolio import PortfolioMapped, PortfolioSchema
 
 
-def get(id : int):
+def getById(id : int):
     with Session(engine) as session:
-        return session.get(PortfolioMapped, id)
+        data = session.get(PortfolioMapped, id)
+        if data is None:
+            raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+        return data
+        
     
 def create(payload: PortfolioSchema):
     with Session(engine) as session:

@@ -35,8 +35,8 @@ app.add_middleware(
 Base.metadata.create_all(engine)
 
 @app.get("/users", tags=['User'])
-async def get_user():
-        return user_repository.get()
+async def get_all_user():
+        return user_repository.getAll()
 
 @app.get("/users/{id}", tags=['User'])
 def get_user(id: int):
@@ -62,8 +62,8 @@ def delete_user(id: int):
 # user adm controller --------------------------------------
 
 @app.get("/users-adm", tags=['UserAdm'])
-def get_user_adm():
-        return user_adm_repository.get()
+def get_all_user_adm():
+        return user_adm_repository.getAll()
 
 @app.get("/users-adm/{id}", tags=['UserAdm'])
 def get_user_adm(id: int):
@@ -84,8 +84,8 @@ def delete_user_adm(id: int):
 
 # portfolio controller -------------
 @app.get('/portfolio/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio'])
-def get_portfolio(id: int):
-        return portfolio_repository.get(id)
+def get_all_portfolio(id: int):
+        return portfolio_repository.getById(id)
 
 @app.post('/portfolio/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio'])
 def create_portfolio(payload: PortfolioCreate):
@@ -94,8 +94,8 @@ def create_portfolio(payload: PortfolioCreate):
         
 # portfolio datas controller ------------
 @app.get('/portfolio-datas', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
-def get_portfolio_datas():
-        return portfolio_datas_repository.get()
+def get_all_portfolio_datas():
+        return portfolio_datas_repository.getAll()
 
 @app.get('/portfolio-datas/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def get_portfolio_datas(id: int):
@@ -107,4 +107,4 @@ def create_portfolio_datas(payload: PortfolioDatasCreate):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=10000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
