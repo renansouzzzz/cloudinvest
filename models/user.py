@@ -4,9 +4,9 @@ from enum import Enum
 
 
 class TypeProfileEnumDTO(Enum):
-    Devedor = 0
-    Intermediario = 1
-    Investidor = 2
+    Devedor = "Devedor"
+    Intermediario = "Intermediário"
+    Investidor = "Investidor"
         
 class User(BaseModel):
     name: str = Field(..., min_length=3, max_length=50)

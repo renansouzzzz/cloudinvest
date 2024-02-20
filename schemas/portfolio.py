@@ -5,9 +5,6 @@ from sqlalchemy.orm import relationship
 
 class PortfolioSchema(Base):
     __tablename__ = 'portfolio'
-    __table_args__ = {
-        'mysql_engine': 'InnoDB'
-    }
 
     id = Column(Integer, primary_key=True, index=True, nullable=False)
     id_user = Column(Integer, ForeignKey('user.id', onupdate='CASCADE'), nullable=False)
