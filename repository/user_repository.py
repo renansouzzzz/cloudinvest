@@ -22,6 +22,9 @@ def getAll():
 def getById(id: int):
     with Session(engine) as session:
         data = session.get(UserMapped, id)
+        
+        data.password = fernet.decrypt(data.password).decode()
+        
         if data is None:
             raise ValueError(f'O usuário com ID {id} não foi encontrado!')
         return data
@@ -31,8 +34,7 @@ def create(payload: UserCreate):
         
         user = UserSchema(**payload.dict())
         
-        # user.password = fernet.encrypt(user.password.encode())
-        # decMessage = fernet.decrypt(encMessage).decode()
+        user.password = fernet.encrypt(user.password.encode())
         session.add(user)
         session.commit()
         session.refresh(user)

@@ -35,7 +35,7 @@ app.add_middleware(
 Base.metadata.create_all(engine)
 
 @app.get("/users", tags=['User'])
-async def get_all_user():
+def get_all_user():
         return user_repository.getAll()
 
 @app.get("/users/{id}", tags=['User'])
@@ -84,7 +84,7 @@ def delete_user_adm(id: int):
 
 # portfolio controller -------------
 @app.get('/portfolio/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio'])
-def get_all_portfolio(id: int):
+def get_by_id_portfolio(id: int):
         return portfolio_repository.getById(id)
 
 @app.post('/portfolio/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio'])
