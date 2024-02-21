@@ -37,7 +37,7 @@ Base.metadata.create_all(engine)
 
 @app.get("/")
 async def read_root():
-    return {"message": "teste!"}
+    return {"message": "API EXECUTADA COM SUCESSO!"}
 
 @app.get("/users", tags=['User'])
 def get_all_user():
