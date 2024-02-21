@@ -34,6 +34,11 @@ app.add_middleware(
 
 Base.metadata.create_all(engine)
 
+
+@app.get("/")
+async def read_root():
+    return {"message": "teste!"}
+
 @app.get("/users", tags=['User'])
 def get_all_user():
         return user_repository.getAll()
