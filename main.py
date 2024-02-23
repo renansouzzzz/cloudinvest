@@ -43,6 +43,10 @@ async def read_root():
 def get_all_user():
         return user_repository.getAll()
 
+@app.post("/users/login", tags=['User'])
+def login_user():
+        return user_repository.getAll()
+
 @app.get("/users/{id}", tags=['User'])
 def get_user(id: int):
         return user_repository.getById(id)

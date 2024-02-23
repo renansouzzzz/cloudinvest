@@ -12,21 +12,29 @@ from cryptography.fernet import Fernet
 key = Fernet.generate_key()
 fernet = Fernet(key)
 
-def getAll():
+def loginUser():
     with Session(engine) as session:
         data = session.query(UserMapped).all()
         if data is None:
             raise ValueError(f'O usuário com ID {id} não foi encontrado!')
         return data
 
+def getAll():
+    with Session(engine) as session:
+        data = session.query(UserMapped).all()
+        if data is None:
+            raise ValueError(f'Nenhum usuário encontrado!')
+        return data
+
 def getById(id: int):
     with Session(engine) as session:
         data = session.get(UserMapped, id)
         
-        data.password = fernet.decrypt(data.password).decode()
-        
         if data is None:
             raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+        
+        data.password = fernet.decrypt(data.password).decode()
+        
         return data
 
 def create(payload: UserCreate):
