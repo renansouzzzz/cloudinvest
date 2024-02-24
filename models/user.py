@@ -12,7 +12,8 @@ class User(BaseModel):
     name: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
     password: str = Field(..., regex='^(?=.*\d).{8,}$')
-
+    
+    
 class UserUpdateTypeProfile(BaseModel):
     type_profile: TypeProfileEnumDTO
 

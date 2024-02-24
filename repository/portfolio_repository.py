@@ -11,7 +11,7 @@ def getById(id : int):
     with Session(engine) as session:
         data = session.get(PortfolioMapped, id)
         if data is None:
-            raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+            raise ValueError(f'Carteira não encontrada!')
         return data
         
     
