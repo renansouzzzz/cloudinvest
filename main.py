@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, status, Security
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import uvicorn
 
@@ -17,7 +17,6 @@ from fastapi.openapi.utils import get_openapi
 from security.token.token_verify import Token
 
 from security.user_security.security_verify import authenticate_user
-# from security.token.token_verify import create_access_token
 
 origins = [
     "*",
@@ -37,22 +36,11 @@ Base.metadata.create_all(engine)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-def custom_openapi():
-    if app.openapi_schema:
-        return app.openapi_schema
-    openapi_schema = get_openapi(
-        title='PlaneLife API',
-        description='API > ReactNative',
-        version='1.0',
-        routes=app.routes,
-    )
-    openapi_schema["components"]["securitySchemes"] = {
-        "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
-    }
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
 
-app.openapi = custom_openapi
+
+@app.get("/")
+async def read_root():
+    return {"message": "API EXECUTADA COM SUCESSO!"}
 
 
 @app.post("/token")
@@ -67,14 +55,8 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return Token.create_access_token(user.email)
 
 
-
-@app.get("/")
-async def read_root():
-    return {"message": "API EXECUTADA COM SUCESSO!"}
-
-
-@app.get("/users", tags=['User'], dependencies=[Security(oauth2_scheme)])
-def get_all_user(payload: dict = Depends(Token.get_current_user)):
+@app.get("/users", tags=['User'])
+def get_all_user(token: str = Depends(oauth2_scheme)):
         return user_repository.getAll()
 
 @app.get("/users/{id}", tags=['User'])
