@@ -3,7 +3,7 @@ from MySQLdb import IntegrityError
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from models.user import UserCreate, UserUpdate, UserLogin, TypeProfileEnumDTO, UserUpdateTypeProfile
+from models.user import UserCreate, UserUpdate, TypeProfileEnumDTO, UserUpdateTypeProfile
 from schemas.user import UserMapped, UserSchema, UserSchema
 
 from config.database import engine
@@ -16,17 +16,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 key = Fernet.generate_key()
 fernet = Fernet(key)
 
-def loginUser(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    with Session(engine) as session:
-        user_dict = session.get(form_data.email)
-        if not user_dict:
-            raise HTTPException(status_code=400, detail="Usuário incorreto!")
-        user = UserLogin(**user_dict)
-        hashed_password = form_data.password
-        if not hashed_password == user.hashed_password:
-            raise HTTPException(status_code=400, detail="Incorrect username or password")
-
-    return {"access_token": user.username, "token_type": "bearer"}
 
 def getAll():
     with Session(engine) as session:

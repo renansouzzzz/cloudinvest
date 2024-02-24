@@ -2,7 +2,7 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import uvicorn
 
-from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile, UserLogin
+from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile
 from models.user_adm import UserAdmCreate, UserAdmUpdate
 from models.portfolio import PortfolioCreate
 from models.portfolio_datas import PortfolioDatasCreate
@@ -14,9 +14,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi.openapi.utils import get_openapi
+from security.token.token_verify import Token
 
 from security.user_security.security_verify import authenticate_user
-from security.token.token_verify import create_access_token
+# from security.token.token_verify import create_access_token
 
 origins = [
     "*",
@@ -56,26 +57,22 @@ app.openapi = custom_openapi
 
 @app.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(UserLogin, form_data.email, form_data.password)
+    user = authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Usuário ou senha inválidos',
             headers={'WWW-Authenticate': 'Bearer'},
         )
-    return create_access_token(user['username'])
-
+    return Token.create_access_token(user.email)
 
 @app.get("/")
 async def read_root():
     return {"message": "API EXECUTADA COM SUCESSO!"}
 
-@app.post("/users/login", tags=['User'])
-def login_user(token: str = Depends(oauth2_scheme)):
-        return user_repository.loginUser()
 
 @app.get("/users", tags=['User'])
-def get_all_user(token: str = Depends(oauth2_scheme)):
+def get_all_user(payload: dict = Depends(Token.get_current_user)):
         return user_repository.getAll()
 
 @app.get("/users/{id}", tags=['User'])
