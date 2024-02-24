@@ -13,7 +13,7 @@ def getAll():
     with Session(engine) as session:
         data = session.query(UserAdmMapped).all()
         if data is None:
-            raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+            raise ValueError(f'Nenhum usuário encontrado!')
         return data
     
 def getById(id: int):

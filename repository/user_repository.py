@@ -1,32 +1,49 @@
+from typing import Annotated
 from MySQLdb import IntegrityError
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from models.user import UserCreate, UserUpdate, TypeProfileEnumDTO, UserUpdateTypeProfile
+from models.user import UserCreate, UserUpdate, UserLogin, TypeProfileEnumDTO, UserUpdateTypeProfile
 from schemas.user import UserMapped, UserSchema, UserSchema
 
 from config.database import engine
 from cryptography.fernet import Fernet
 
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 key = Fernet.generate_key()
 fernet = Fernet(key)
+
+def loginUser(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+    with Session(engine) as session:
+        user_dict = session.get(form_data.email)
+        if not user_dict:
+            raise HTTPException(status_code=400, detail="Usuário incorreto!")
+        user = UserLogin(**user_dict)
+        hashed_password = form_data.password
+        if not hashed_password == user.hashed_password:
+            raise HTTPException(status_code=400, detail="Incorrect username or password")
+
+    return {"access_token": user.username, "token_type": "bearer"}
 
 def getAll():
     with Session(engine) as session:
         data = session.query(UserMapped).all()
         if data is None:
-            raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+            raise ValueError(f'Nenhum usuário encontrado!')
         return data
 
 def getById(id: int):
     with Session(engine) as session:
         data = session.get(UserMapped, id)
         
-        data.password = fernet.decrypt(data.password).decode()
-        
         if data is None:
             raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+        
+        data.password = fernet.decrypt(data.password).decode()
+        
         return data
 
 def create(payload: UserCreate):
