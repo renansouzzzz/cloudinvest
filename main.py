@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, status, Security
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import uvicorn
 
@@ -17,7 +17,6 @@ from fastapi.openapi.utils import get_openapi
 from security.token.token_verify import Token
 
 from security.user_security.security_verify import authenticate_user
-# from security.token.token_verify import create_access_token
 
 origins = [
     "*",
@@ -38,6 +37,12 @@ Base.metadata.create_all(engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
+
+@app.get("/")
+async def read_root():
+    return {"message": "API EXECUTADA COM SUCESSO!"}
+
+
 @app.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(form_data.username, form_data.password)
@@ -48,12 +53,6 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             headers={'WWW-Authenticate': 'Bearer'},
         )
     return Token.create_access_token(user.email)
-
-
-
-@app.get("/")
-async def read_root():
-    return {"message": "API EXECUTADA COM SUCESSO!"}
 
 
 @app.get("/users", tags=['User'])
