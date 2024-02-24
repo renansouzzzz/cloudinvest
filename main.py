@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status, Security
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import uvicorn
 
@@ -66,12 +66,14 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         )
     return Token.create_access_token(user.email)
 
+
+
 @app.get("/")
 async def read_root():
     return {"message": "API EXECUTADA COM SUCESSO!"}
 
 
-@app.get("/users", tags=['User'])
+@app.get("/users", tags=['User'], dependencies=[Security(oauth2_scheme)])
 def get_all_user(payload: dict = Depends(Token.get_current_user)):
         return user_repository.getAll()
 
