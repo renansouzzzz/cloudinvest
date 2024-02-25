@@ -13,6 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Get branch name
+        id: branch-name
+        run: echo "::set-output name=branch_name::${GITHUB_REF#refs/heads/}"
+
       - name: Push to Hotfix Branch
         run: |
           git config --local user.email renansouza.oliv@outlook.com
@@ -21,4 +25,6 @@ jobs:
           git checkout -b hotfix
           git pull origin hotfix
           git merge develop --no-edit
+          git add .
+          git commit -m "Merge to branch Hotfix"
           git push origin hotfix
