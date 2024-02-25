@@ -1,0 +1,23 @@
+name: Update/Merge Hotfix
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  sync-develop-to-hotfix:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Pull changes from hotfix branch
+        run: git pull origin hotfix --rebase
+
+      - name: Push to Hotfix Branch
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git push origin hotfix
