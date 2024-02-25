@@ -13,10 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Get branch name
-        id: branch-name
-        run: echo "::set-output name=branch_name::${GITHUB_REF#refs/heads/}"
-
       - name: Push to Hotfix Branch
         run: |
           git config --local user.email renansouza.oliv@outlook.com
