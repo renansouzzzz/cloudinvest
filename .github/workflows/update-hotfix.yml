@@ -1,27 +1,41 @@
-name: Update/Merge Hotfix
+name: Merge hotfix to develop
 
 on:
   push:
     branches:
       - develop
 
-jobs:
-  sync-develop-to-hotfix:
-    runs-on: ubuntu-latest
+permissions:
+  contents: write
 
+env:
+  GIT_USER_EMAIL: renansouza.oliv@outlook.com
+  GIT_USER_NAME: renansouzzzz
+
+jobs:
+  merge-hotfix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Push to Hotfix Branch
+        with:
+          fetch-depth: 0 
+          
+      - name: Set up Git
         run: |
-          git config --local user.email renansouza.oliv@outlook.com
-          git config --local user.name renansouzzzz
-          git fetch --all
-          git pull origin develop
-          git switch hotfix
+          git config --global user.email "${{ env.GIT_USER_EMAIL }}"
+          git config --global user.name "${{ env.GIT_USER_NAME }}"
+
+      - name: Fetch all branches and tags
+        run: git fetch --prune
+
+      - name: Merge hotfix
+        run: |
+          git checkout -B hotfix origin/hotfix
           git pull origin hotfix
-          git merge develop --no-edit --allow-unrelated-histories 
-          git add .
-          git commit -m "Merge to branch Hotfix"
-          git push origin hotfix
+          git checkout develop
+          git merge --no-ff --no-edit --allow-unrelated-histories hotfix
+          git push origin develop
