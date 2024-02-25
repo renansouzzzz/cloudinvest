@@ -5,6 +5,10 @@ on:
     branches:
       - develop
 
+env:
+  GIT_USER_EMAIL: renansouza.oliv@outlook.com
+  GIT_USER_NAME: renansouzzzz
+
 jobs:
   merge-hotfix:
     runs-on: ubuntu-latest
@@ -14,7 +18,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config --global user.email "${{ env.GIT_USER_EMAIL }}"
+          git config --global user.name "${{ env.GIT_USER_NAME }}"
+
       - name: Merge hotfix
         run: |
           git fetch --all
