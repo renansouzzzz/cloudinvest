@@ -9,7 +9,8 @@ env:
   GIT_USER_EMAIL: renansouza.oliv@outlook.com
   GIT_USER_NAME: renansouzzzz
 
-permissions: write-all
+permissions:
+  contents: write
 
 jobs:
   merge-hotfix:
