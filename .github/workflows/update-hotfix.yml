@@ -5,35 +5,34 @@ on:
     branches:
       - develop
 
-env:
-  GIT_USER_EMAIL: renansouza.oliv@outlook.com
-  GIT_USER_NAME: renansouzzzz
-
 permissions:
   contents: write
+ 
 
 jobs:
   merge-hotfix:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Fetch all history so unrelated histories are not an issue
 
       - name: Set up Git
         run: |
           git config --global user.email "${{ env.GIT_USER_EMAIL }}"
           git config --global user.name "${{ env.GIT_USER_NAME }}"
 
+      - name: Fetch all branches and tags
+        run: git fetch --prune --unshallow
+
       - name: Merge hotfix
         run: |
-          git fetch --all
-          git switch hotfix
+          git checkout -B hotfix origin/hotfix
           git pull origin hotfix
           git checkout develop
-          git merge --no-edit --allow-unrelated-histories hotfix
+          git merge --no-ff --no-edit --allow-unrelated-histories hotfix
           git push origin develop
