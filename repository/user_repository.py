@@ -1,15 +1,14 @@
-from typing import Annotated
 from MySQLdb import IntegrityError
-from fastapi import Depends, HTTPException
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from models.user import UserCreate, UserUpdate, TypeProfileEnumDTO, UserUpdateTypeProfile
 from schemas.user import UserMapped, UserSchema, UserSchema
 
 from config.database import engine
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -27,20 +26,33 @@ def getAll():
 def getById(id: int):
     with Session(engine) as session:
         data = session.get(UserMapped, id)
+        data.password = fernet.decrypt(data.password).decode()
         
         if data is None:
             raise ValueError(f'O usuário com ID {id} não foi encontrado!')
         
-        #data.password = fernet.decrypt(data.password).decode()
-        
         return data
+    
+def getByEmail(email):
+    with Session(engine) as session:
+        user = session.query(UserSchema).filter(UserSchema.email == email).first()
+        print(user.password)
+        if user is None:
+            raise ValueError(f'O usuário com email {email} não foi encontrado!')
+
+        try:
+            user.password = fernet.decrypt(user.password).decode()
+        except InvalidToken:
+            raise ValueError('Erro ao descriptografar a senha. A senha pode estar incorreta ou corrompida.')
+
+        return user
 
 def create(payload: UserCreate):
     with Session(engine) as session:
         
         user = UserSchema(**payload.dict())
         
-        #user.password = fernet.encrypt(user.password.encode())
+        user.password = fernet.encrypt(user.password.encode())
         session.add(user)
         session.commit()
         session.refresh(user)
