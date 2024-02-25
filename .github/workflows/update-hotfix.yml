@@ -8,14 +8,18 @@ on:
 jobs:
   merge-hotfix:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
       
-    - name: Merge hotfix
-      run: |
-        git switch hotfix
-        git pull origin hotfix
-        git switch develop
-        git merge --no-ff --no-edit hotfix
-        git push origin develop
+      - name: Merge hotfix
+        run: |
+          git fetch --all
+          git checkout -B hotfix origin/hotfix
+          git pull origin hotfix
+          git checkout develop
+          git merge --no-ff --no-edit hotfix
+          git push origin develop
