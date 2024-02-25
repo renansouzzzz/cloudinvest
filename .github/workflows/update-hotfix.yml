@@ -33,4 +33,4 @@ jobs:
           git pull origin hotfix
           git checkout develop
           git merge --no-ff --no-edit --allow-unrelated-histories hotfix
-          git push origin develop
+          git push https://renansouzzzz:${{ secrets.GH_TOKEN }}@github.com/renansouzzzz/plane-life.git develop
