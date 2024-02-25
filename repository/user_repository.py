@@ -36,7 +36,6 @@ def getById(id: int):
 def getByEmail(email):
     with Session(engine) as session:
         user = session.query(UserSchema).filter(UserSchema.email == email).first()
-        print(user.password)
         if user is None:
             raise ValueError(f'O usuário com email {email} não foi encontrado!')
 
