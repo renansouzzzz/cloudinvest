@@ -1,4 +1,4 @@
-name: Update/Merge Hotfix
+name: Merge hotfix to develop
 
 on:
   push:
@@ -6,19 +6,17 @@ on:
       - develop
 
 jobs:
-  sync-develop-to-hotfix:
+  merge-hotfix:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Push to Hotfix Branch
-        run: |
-          git config --local user.email renansouza.oliv@outlook.com
-          git config --local user.name renansouzzzz
-          git switch hotfix
-          git merge develop
-          git add .
-          git commit -m "Merge to branch Hotfix"
-          git push origin hotfix
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Merge hotfix
+      run: |
+        git fetch --all
+        git checkout hotfix
+        git pull origin hotfix
+        git checkout develop
+        git merge --no-ff --no-edit hotfix
+        git push origin develop
