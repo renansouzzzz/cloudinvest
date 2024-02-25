@@ -17,8 +17,11 @@ jobs:
         run: |
           git config --local user.email renansouza.oliv@outlook.com
           git config --local user.name renansouzzzz
+          git fetch --all
           git pull origin develop
-          git checkout -b hotfix
+          git switch hotfix
           git pull origin hotfix
-          git merge develop --no-edit
+          git merge develop --no-edit --allow-unrelated-histories 
+          git add .
+          git commit -m "Merge to branch Hotfix"
           git push origin hotfix
