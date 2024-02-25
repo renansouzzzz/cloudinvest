@@ -36,6 +36,5 @@ jobs:
         run: |
           git checkout -B hotfix origin/hotfix
           git pull origin hotfix
-          git checkout develop
-          git merge --no-ff --no-edit --allow-unrelated-histories hotfix
-          git push origin develop
+          git merge --no-ff --no-edit --allow-unrelated-histories develop
+          git push origin hotfix
