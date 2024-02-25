@@ -33,17 +33,6 @@ def getById(id: int):
         
         return data
     
-    
-def getByIds(id: int):
-    with Session(engine) as session:
-        data = session.get(UserMapped, id)
-        data.password = fernet.decrypt(data.password).decode()
-        
-        if data is None:
-            raise ValueError(f'O usuário com ID {id} não foi encontrado!')
-        
-        return data
-    
 def getByEmail(email):
     with Session(engine) as session:
         user = session.query(UserSchema).filter(UserSchema.email == email).first()
