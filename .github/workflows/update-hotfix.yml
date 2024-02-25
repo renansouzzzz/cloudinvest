@@ -36,4 +36,4 @@ jobs:
           git pull origin hotfix
           git checkout develop
           git merge --no-edit --allow-unrelated-histories hotfix
-          git push develop
+          git push origin develop
