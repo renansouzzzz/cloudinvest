@@ -59,7 +59,7 @@ def get_all_user():
         return user_repository.getAll()
 
 @app.get("/users/{id}", tags=['User'])
-def get_user(id: int, ):
+def get_user(id: int):
         return user_repository.getById(id)
 
 @app.post("/users/create", status_code=status.HTTP_201_CREATED, tags=['User'])
