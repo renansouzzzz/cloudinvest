@@ -1,0 +1,22 @@
+name: Merge hotfix to develop
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  merge-hotfix:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Merge hotfix
+      run: |
+        git fetch --all
+        git checkout hotfix
+        git pull origin hotfix
+        git checkout develop
+        git merge --no-ff --no-edit hotfix
+        git push origin develop
