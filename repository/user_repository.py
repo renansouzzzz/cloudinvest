@@ -28,7 +28,6 @@ def getById(id: int):
         data = session.get(UserMapped, id)
         data.password = fernet.decrypt(data.password).decode()
         
-        
         if data is None:
             raise ValueError(f'O usuário com ID {id} não foi encontrado!')
         
