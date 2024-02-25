@@ -13,11 +13,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Pull changes from hotfix branch
-        run: git pull origin hotfix --rebase
-
       - name: Push to Hotfix Branch
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git push origin hotfix
+          git pull origin develop
