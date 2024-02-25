@@ -13,7 +13,6 @@ from repository import user_repository, user_adm_repository, portfolio_repositor
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from fastapi.openapi.utils import get_openapi
 from security.token.token_verify import Token
 
 from security.user_security.security_verify import authenticate_user
@@ -56,27 +55,27 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 
 @app.get("/users", tags=['User'])
-def get_all_user(token: str = Depends(oauth2_scheme)):
+def get_all_user():
         return user_repository.getAll()
 
 @app.get("/users/{id}", tags=['User'])
-def get_user(id: int, token: str = Depends(oauth2_scheme)):
+def get_user(id: int, ):
         return user_repository.getById(id)
 
 @app.post("/users/create", status_code=status.HTTP_201_CREATED, tags=['User'])
-def create_user(payload: UserCreate, token: str = Depends(oauth2_scheme)):
+def create_user(payload: UserCreate):
         return user_repository.create(payload)
 
 @app.put("/users/update/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['User'])
-def update_user(user: UserUpdate, id: int, token: str = Depends(oauth2_scheme)):
+def update_user(user: UserUpdate, id: int):
         return user_repository.update(user, id)
 
 @app.put("/users/update-type-profile/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['User'])
-def update_type_profile_user(id: int, typeProfile: UserUpdateTypeProfile, token: str = Depends(oauth2_scheme)):
+def update_type_profile_user(id: int, typeProfile: UserUpdateTypeProfile):
         return user_repository.updateTypeProfile(id, typeProfile)
 
 @app.delete('/users/delete/{id}', tags=['User'])
-def delete_user(id: int, token: str = Depends(oauth2_scheme)):       
+def delete_user(id: int):       
         return user_repository.delete(id)
 
 
