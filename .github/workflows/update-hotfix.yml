@@ -19,15 +19,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Fetch all history so unrelated histories are not an issue
-
+          fetch-depth: 0 
+          
       - name: Set up Git
         run: |
           git config --global user.email "${{ env.GIT_USER_EMAIL }}"
           git config --global user.name "${{ env.GIT_USER_NAME }}"
 
       - name: Fetch all branches and tags
-        run: git fetch --prune --unshallow
+        run: git fetch --prune
 
       - name: Merge hotfix
         run: |
