@@ -21,7 +21,6 @@ jobs:
           git switch develop
           git pull origin develop
           git switch hotfix
-          git pull origin hotfix
           git merge develop --no-edit --allow-unrelated-histories 
           git add .
           git commit -m "Merge to branch Hotfix"
