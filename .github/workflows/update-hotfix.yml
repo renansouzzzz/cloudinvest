@@ -21,5 +21,5 @@ jobs:
           git checkout -B hotfix origin/hotfix
           git pull origin hotfix
           git checkout develop
-          git merge --no-ff --no-edit hotfix
+          git merge --no-ff --no-edit --allow-unrelated-histories hotfix
           git push origin develop
