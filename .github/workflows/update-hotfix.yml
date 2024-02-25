@@ -18,5 +18,6 @@ jobs:
           git config --local user.email renansouza.oliv@outlook.com
           git config --local user.name renansouzzzz
           git checkout -b hotfix
+          git pull origin hotfix
           git merge develop --no-edit
-          git push origin hotfix
+          git push origin hotfix --force
