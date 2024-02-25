@@ -33,6 +33,7 @@ def getById(id: int):
         
         return data
     
+    
 def getByIds(id: int):
     with Session(engine) as session:
         data = session.get(UserMapped, id)
