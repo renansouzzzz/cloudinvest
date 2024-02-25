@@ -51,7 +51,6 @@ def create(payload: UserCreate):
         
         user = UserSchema(**payload.dict())
         
-        print(user)
         user.password = fernet.encrypt(user.password.encode())
         session.add(user)
         session.commit()
