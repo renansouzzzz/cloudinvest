@@ -32,7 +32,7 @@ jobs:
       - name: Merge hotfix
         run: |
           git fetch --all
-          git checkout -B hotfix origin/hotfix
+          git switch hotfix
           git pull origin hotfix
           git checkout develop
           git merge --no-edit --allow-unrelated-histories hotfix
