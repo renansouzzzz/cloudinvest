@@ -35,12 +35,11 @@ def getById(id: int):
     
 def getByEmail(email):
     with Session(engine) as session:
-        user = session.query(UserSchema).filter(UserSchema.email == email).first()
-        if user is None:
-            raise ValueError(f'O usuário com email {email} não foi encontrado!')
-
         try:
-            user.password = fernet.decrypt(user.password).decode()
+            user = session.query(UserSchema).filter(UserSchema.email == email).first()
+            if user is None:
+                raise ValueError(f'O usuário com email {email} não foi encontrado!')
+            # user.password = fernet.decrypt(user.password).decode()
         except InvalidToken:
             raise ValueError('Erro ao descriptografar a senha. A senha pode estar incorreta ou corrompida.')
 
@@ -48,15 +47,14 @@ def getByEmail(email):
 
 def create(payload: UserCreate):
     with Session(engine) as session:
-        
-        user = UserSchema(**payload.dict())
-        
-        
-        user.password = fernet.encrypt(user.password.encode())
-        session.add(user)
-        session.commit()
-        session.refresh(user)
-        
+        try:
+            user = UserSchema(**payload.dict())
+            # user.password = fernet.encrypt(user.password.encode())
+            session.add(user)
+            session.commit()
+            session.refresh(user)
+        except:
+            raise HTTPException(status_code=400, detail='Falha ao criar usuário!')
         return user
 
 
