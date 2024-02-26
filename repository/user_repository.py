@@ -54,6 +54,7 @@ def create(payload: UserCreate):
             session.commit()
             session.refresh(user)
         except:
+            session.rollback()
             raise HTTPException(status_code=400, detail='Falha ao criar usuário!')
         return user
 
