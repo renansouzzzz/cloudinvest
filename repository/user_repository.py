@@ -26,7 +26,7 @@ def getAll():
 def getById(id: int):
     with Session(engine) as session:
         data = session.get(UserMapped, id)
-        data.password = fernet.decrypt(data.password).decode()
+        #data.password = fernet.decrypt(data.password).decode()
         
         if data is None:
             raise ValueError(f'O usuário com ID {id} não foi encontrado!')
@@ -108,13 +108,14 @@ def updateTypeProfile(id: int, user: UserUpdateTypeProfile):
 def delete(id: int):
     with Session(engine) as session:
         try:
-            getUser = session.get(UserSchema, id)
+            getUser = session.query(UserSchema).filter(UserSchema.id == id).one_or_none()
             
             if not getUser:
                 raise HTTPException(status_code=404, detail="Usuário não encontrado!")
             
-            session.execute(f"UPDATE user SET active = false WHERE id = {id}")
-            session.commit()     
+            getUser.active = False
+            session.commit()
+            session.refresh(getUser)
         
         except IntegrityError as e:
             session.rollback()
