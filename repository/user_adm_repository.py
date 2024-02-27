@@ -18,19 +18,27 @@ def getAll():
     
 def getById(id: int):
     with Session(engine) as session:
-        data = session.get(UserAdmMapped, id)
-        if data is None:
-            raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+        try:
+            data = session.get(UserAdmMapped, id)
+            
+            if data is None:
+                raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+        except:
+            raise HTTPException(status_code=400, detail='Não foi possível coletar o usuário!')
+        
         return data
 
 def create(payload: UserAdmCreate):
     with Session(engine) as session:
-        
-        user = UserAdmSchema(**payload.dict())
-        
-        session.add(user)
-        session.commit()
-        session.refresh(user)
+        try:
+            user = UserAdmSchema(**payload.dict())
+            
+            session.add(user)
+            session.commit()
+            session.refresh(user)
+        except:
+            session.rollback()
+            raise HTTPException(status_code=400, detail='Erro ao adicionar um novo usuário administrador!')
         
         return user
 
