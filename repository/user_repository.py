@@ -26,7 +26,7 @@ def getAll():
 def getById(id: int):
     with Session(engine) as session:
         data = session.get(UserMapped, id)
-        data.password = fernet.decrypt(data.password).decode()
+        #data.password = fernet.decrypt(data.password).decode()
         
         if data is None:
             raise ValueError(f'O usuário com ID {id} não foi encontrado!')
@@ -35,12 +35,11 @@ def getById(id: int):
     
 def getByEmail(email):
     with Session(engine) as session:
-        user = session.query(UserSchema).filter(UserSchema.email == email).first()
-        if user is None:
-            raise ValueError(f'O usuário com email {email} não foi encontrado!')
-
         try:
-            user.password = fernet.decrypt(user.password).decode()
+            user = session.query(UserSchema).filter(UserSchema.email == email).first()
+            if user is None:
+                raise ValueError(f'O usuário com email {email} não foi encontrado!')
+            # user.password = fernet.decrypt(user.password).decode()
         except InvalidToken:
             raise ValueError('Erro ao descriptografar a senha. A senha pode estar incorreta ou corrompida.')
 
@@ -48,15 +47,15 @@ def getByEmail(email):
 
 def create(payload: UserCreate):
     with Session(engine) as session:
-        
-        user = UserSchema(**payload.dict())
-        
-        
-        user.password = fernet.encrypt(user.password.encode())
-        session.add(user)
-        session.commit()
-        session.refresh(user)
-        
+        try:
+            user = UserSchema(**payload.dict())
+            # user.password = fernet.encrypt(user.password.encode())
+            session.add(user)
+            session.commit()
+            session.refresh(user)
+        except:
+            session.rollback()
+            raise HTTPException(status_code=400, detail='Falha ao criar usuário!')
         return user
 
 
@@ -109,13 +108,14 @@ def updateTypeProfile(id: int, user: UserUpdateTypeProfile):
 def delete(id: int):
     with Session(engine) as session:
         try:
-            getUser = session.get(UserSchema, id)
+            getUser = session.query(UserSchema).filter(UserSchema.id == id).one_or_none()
             
             if not getUser:
                 raise HTTPException(status_code=404, detail="Usuário não encontrado!")
             
-            session.execute(f"UPDATE user SET active = false WHERE id = {id}")
-            session.commit()     
+            getUser.active = False
+            session.commit()
+            session.refresh(getUser)
         
         except IntegrityError as e:
             session.rollback()
