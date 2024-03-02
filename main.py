@@ -21,7 +21,9 @@ origins = [
     "*",
 ]
 
-app = FastAPI()
+app = FastAPI(
+        title='PLANE LIFE - FastAPI -> ReactNative'
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -36,13 +38,12 @@ Base.metadata.create_all(engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-
 @app.get("/", tags=['Health check'])
 async def read_root():
     return {"message": "API EXECUTADA COM SUCESSO!"}
 
 
-@app.post("/token")
+@app.post("/token", tags=['Token'])
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(form_data.username, form_data.password)
     if not user:
@@ -55,11 +56,11 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 
 @app.get("/users", tags=['User'])
-def get_all_user():
+def get_all_user(token: str = Depends(oauth2_scheme)):
         return user_repository.getAll()
 
 @app.get("/users/{id}", tags=['User'])
-def get_user(id: int):
+def get_user(id: int, token: str = Depends(oauth2_scheme)):
         return user_repository.getById(id)
 
 @app.post("/users/create", status_code=status.HTTP_201_CREATED, tags=['User'])
@@ -67,15 +68,15 @@ def create_user(payload: UserCreate):
         return user_repository.create(payload)
 
 @app.put("/users/update/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['User'])
-def update_user(user: UserUpdate, id: int):
+def update_user(user: UserUpdate, id: int, token: str = Depends(oauth2_scheme)):
         return user_repository.update(user, id)
 
 @app.put("/users/update-type-profile/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['User'])
-def update_type_profile_user(id: int, typeProfile: UserUpdateTypeProfile):
+def update_type_profile_user(id: int, typeProfile: UserUpdateTypeProfile, token: str = Depends(oauth2_scheme)):
         return user_repository.updateTypeProfile(id, typeProfile)
 
 @app.delete('/users/delete/{id}', tags=['User'])
-def delete_user(id: int):       
+def delete_user(id: int, token: str = Depends(oauth2_scheme)):       
         return user_repository.delete(id)
 
 
