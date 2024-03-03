@@ -8,7 +8,6 @@ from config.database import engine
 
 from schemas.user_adm import UserAdmMapped, UserAdmSchema
 
-
 def getAll():
     with Session(engine) as session:
         data = session.query(UserAdmMapped).all()
@@ -32,7 +31,7 @@ def create(payload: UserAdmCreate):
     with Session(engine) as session:
         try:
             user = UserAdmSchema(**payload.dict())
-            
+
             session.add(user)
             session.commit()
             session.refresh(user)
