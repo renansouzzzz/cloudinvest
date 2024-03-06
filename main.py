@@ -6,6 +6,7 @@ from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile
 from models.user_adm import UserAdmCreate, UserAdmUpdate
 from models.portfolio import PortfolioCreate
 from models.portfolio_datas import PortfolioDatasCreate
+from models.token_data import TokenData
 
 from config.database import Base, engine
 from repository import user_repository, user_adm_repository, portfolio_repository, portfolio_datas_repository
@@ -52,7 +53,19 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             detail='Usuário ou senha inválidos',
             headers={'WWW-Authenticate': 'Bearer'},
         )
-    return Token.create_access_token(user.email)
+        
+    access_token = Token.create_access_token(user.email)
+    
+    userData = {
+        'id': user.id,
+        'name': user.name,
+        'email': user.email,
+        'password': user.password,
+        'active': user.active,
+        'type_profile': user.type_profile
+    }
+        
+    return TokenData(access_token=access_token, user=userData)
 
 
 @app.get("/users", tags=['User'])
