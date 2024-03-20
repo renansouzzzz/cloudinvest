@@ -9,7 +9,7 @@ from models.portfolio_datas import PortfolioDatasCreate
 from models.token_data import TokenData
 
 from config.database import Base, engine
-from repository import user_repository, user_adm_repository, portfolio_repository, portfolio_datas_repository
+from repository import user_repository, user_adm_repository, portfolio_datas_repository
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -162,22 +162,6 @@ def delete_user_adm(id: int, token: str = Depends(oauth2_scheme)):
         except ValueError as e:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
-
-# portfolio controller -------------
-@app.get('/portfolio/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio'])
-def get_by_id_portfolio(id: int, token: str = Depends(oauth2_scheme)):
-        try:
-                return portfolio_repository.getById(id)
-        except ValueError as e:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
-        
-@app.post('/portfolio/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio'])
-def create_portfolio(payload: PortfolioCreate, token: str = Depends(oauth2_scheme)):
-        try:
-                return portfolio_repository.create(payload)
-        except ValueError as e:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
-        
         
 # portfolio datas controller ------------
 @app.get('/portfolio-datas', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
