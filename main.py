@@ -83,74 +83,123 @@ async def logout(token: str = Depends(oauth2_scheme)):
 
 @app.get("/users", tags=['User'])
 def get_all_user(token: str = Depends(oauth2_scheme)):
-        return user_repository.getAll()
+        try:
+                return user_repository.getAll()
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 @app.get("/users/{id}", tags=['User'])
 def get_user(id: int, token: str = Depends(oauth2_scheme)):
-        return user_repository.getById(id)
+        try:
+                return user_repository.getById(id)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+        
 
 @app.post("/users/create", status_code=status.HTTP_201_CREATED, tags=['User'])
 def create_user(payload: UserCreate):
-        return user_repository.create(payload)
+        try:
+                return user_repository.create(payload)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 @app.put("/users/update/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['User'])
 def update_user(user: UserUpdate, id: int, token: str = Depends(oauth2_scheme)):
-        return user_repository.update(user, id)
+        try:
+                return user_repository.update(user, id)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 @app.put("/users/update-type-profile/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['User'])
 def update_type_profile_user(id: int, typeProfile: UserUpdateTypeProfile, token: str = Depends(oauth2_scheme)):
-        return user_repository.updateTypeProfile(id, typeProfile)
+        try:
+                return user_repository.updateTypeProfile(id, typeProfile)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 @app.delete('/users/delete/{id}', tags=['User'])
-def delete_user(id: int, token: str = Depends(oauth2_scheme)):       
-        return user_repository.delete(id)
+def delete_user(id: int, token: str = Depends(oauth2_scheme)): 
+        try:      
+                return user_repository.delete(id)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
 # user adm controller --------------------------------------
 
 @app.get("/users-adm", tags=['UserAdm'])
 def get_all_user_adm(token: str = Depends(oauth2_scheme)):
-        return user_adm_repository.getAll()
+        try:
+                return user_adm_repository.getAll()
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 @app.get("/users-adm/{id}", tags=['UserAdm'])
 def get_user_adm(id: int, token: str = Depends(oauth2_scheme)):
-        return user_adm_repository.getById(id)
-
+        try:
+                return user_adm_repository.getById(id)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+        
 @app.post("/users-adm/create", status_code=status.HTTP_201_CREATED, tags=['UserAdm'])
 def create_user_adm(payload: UserAdmCreate, token: str = Depends(oauth2_scheme)):
-        return user_adm_repository.create(payload)
-
+        try:
+                return user_adm_repository.create(payload)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+        
 @app.put("/users-adm/update/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['UserAdm'])
 def update_user_adm(user: UserAdmUpdate, id: int, token: str = Depends(oauth2_scheme)):
-        return user_adm_repository.update(user, id)
+        try:
+                return user_adm_repository.update(user, id)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 @app.delete('/users-adm/delete/{id}', tags=['UserAdm'])
-def delete_user_adm(id: int, token: str = Depends(oauth2_scheme)):       
-        return user_adm_repository.delete(id)
+def delete_user_adm(id: int, token: str = Depends(oauth2_scheme)):
+        try:     
+                return user_adm_repository.delete(id)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
 # portfolio controller -------------
 @app.get('/portfolio/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio'])
 def get_by_id_portfolio(id: int, token: str = Depends(oauth2_scheme)):
-        return portfolio_repository.getById(id)
-
+        try:
+                return portfolio_repository.getById(id)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+        
 @app.post('/portfolio/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio'])
 def create_portfolio(payload: PortfolioCreate, token: str = Depends(oauth2_scheme)):
-        return portfolio_repository.create(payload)
+        try:
+                return portfolio_repository.create(payload)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
         
         
 # portfolio datas controller ------------
 @app.get('/portfolio-datas', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def get_all_portfolio_datas(token: str = Depends(oauth2_scheme)):
-        return portfolio_datas_repository.getAll()
+        try:
+                return portfolio_datas_repository.getAll()
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 @app.get('/portfolio-datas/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def get_portfolio_datas(id: int, token: str = Depends(oauth2_scheme)):
-        return portfolio_datas_repository.getById(id)
+        try:
+                return portfolio_datas_repository.getById(id)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 @app.post('/portfolio-datas/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio Datas'])
 def create_portfolio_datas(payload: PortfolioDatasCreate, token: str = Depends(oauth2_scheme)):
-        return portfolio_datas_repository.create(payload)
+        try:
+                return portfolio_datas_repository.create(payload)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
 if __name__ == "__main__":
