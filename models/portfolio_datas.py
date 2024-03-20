@@ -10,7 +10,7 @@ class TagDatasPortfolio(Enum):
 
 class PortfolioDatas(BaseModel):
     name: str = Field(..., max_length=50)
-    id_portfolio: int
+    id_user: int
     value: float
     tag: TagDatasPortfolio
     installment: int
