@@ -4,7 +4,6 @@ import uvicorn
 
 from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile
 from models.user_adm import UserAdmCreate, UserAdmUpdate
-from models.portfolio import PortfolioCreate
 from models.portfolio_datas import PortfolioDatasCreate
 from models.token_data import TokenData
 

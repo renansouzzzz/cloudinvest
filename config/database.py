@@ -9,7 +9,7 @@ DATABASE_URL = config('DATABASE_URL')
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine("DATABASE_URL")
 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
