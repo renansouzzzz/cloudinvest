@@ -8,12 +8,13 @@ class PortfolioDatasSchema(Base):
     __tablename__ = 'port_datas'
 
     id = Column(Integer, primary_key=True, index=True, nullable=False)
+    id_user = Column(Integer, ForeignKey('user.id', onupdate='CASCADE'), nullable=False)
     name = Column(String(100), nullable=False)
     tag: TagDatasPortfolio = Column(Enum(TagDatasPortfolio))
     installment = Column(Integer, nullable=False)
     value = Column(Numeric(18,2), nullable=False)
     
-    portfolio = relationship('PortfolioSchema')
+    user = relationship('UserSchema')
 
     
 class PortfolioDatasMapped(PortfolioDatasSchema):
