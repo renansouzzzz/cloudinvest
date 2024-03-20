@@ -68,6 +68,19 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return TokenData(access_token=access_token, user=userData)
 
 
+@app.get("/logout/", tags=['Logout'])
+async def logout(token: str = Depends(oauth2_scheme)):
+    token_data = Token.verify_token(token)
+    if token_data is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido ou expirado",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        
+    return {"message": "Logout realizado com sucesso"}
+
+
 @app.get("/users", tags=['User'])
 def get_all_user(token: str = Depends(oauth2_scheme)):
         try:
