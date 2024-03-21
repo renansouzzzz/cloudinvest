@@ -164,9 +164,9 @@ def delete_user_adm(id: int, token: str = Depends(oauth2_scheme)):
         
 # portfolio datas controller ------------
 @app.get('/portfolio-datas', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
-def get_all_portfolio_datas(token: str = Depends(oauth2_scheme)):
+def get_all_portfolio_datas(idUser: int, token: str = Depends(oauth2_scheme)):
         try:
-                return portfolio_datas_repository.getAll()
+                return portfolio_datas_repository.getAll(idUser)
         except ValueError as e:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
