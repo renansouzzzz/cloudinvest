@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, Field
 
 from enum import Enum
@@ -10,11 +11,14 @@ class TagDatasPortfolio(Enum):
 
 class PortfolioDatas(BaseModel):
     name: str = Field(..., max_length=50)
-    id_portfolio: int
+    id_user: int
     value: float
     tag: TagDatasPortfolio
     installment: int
     
+    
+class PortfolioDatasGetAll(PortfolioDatas):
+    created_at: datetime = Field(default_factory=datetime.now)
     
 class PortfolioDatasCreate(PortfolioDatas):
     pass
