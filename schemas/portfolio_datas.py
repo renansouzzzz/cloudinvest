@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, Numeric, ForeignKey, String, Enum
+from datetime import datetime
+from sqlalchemy import Column, Integer, Numeric, ForeignKey, String, Enum, DateTime
 from config.database import Base
 from sqlalchemy.orm import relationship
 from models.portfolio_datas import TagDatasPortfolio
@@ -13,6 +14,7 @@ class PortfolioDatasSchema(Base):
     tag: TagDatasPortfolio = Column(Enum(TagDatasPortfolio))
     installment = Column(Integer, nullable=False)
     value = Column(Numeric(18,2), nullable=False)
+    created_at = Column(DateTime, default=datetime.now)
     
     user = relationship('UserSchema')
 
