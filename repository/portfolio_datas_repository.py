@@ -9,7 +9,7 @@ from schemas.portfolio_datas import PortfolioDatasMapped, PortfolioDatasSchema
 
 def getAll(idUser: int):
     with Session(engine) as session:
-        data = session.query(PortfolioDatasSchema).filter(PortfolioDatasSchema.id_user == idUser)
+        data = session.query(PortfolioDatasMapped).filter(PortfolioDatasMapped.id_user == idUser).all()
         if data is None:
             raise ValueError(f'Nenhum usuário foi encontrado!')
         return data
