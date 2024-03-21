@@ -11,12 +11,14 @@ class TagDatasPortfolio(Enum):
 
 class PortfolioDatas(BaseModel):
     name: str = Field(..., max_length=50)
-    created_at: datetime = Field(default_factory=datetime.now)
     id_user: int
     value: float
     tag: TagDatasPortfolio
     installment: int
     
+    
+class PortfolioDatasGetAll(PortfolioDatas):
+    created_at: datetime = Field(default_factory=datetime.now)
     
 class PortfolioDatasCreate(PortfolioDatas):
     pass
