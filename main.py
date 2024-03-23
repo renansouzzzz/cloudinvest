@@ -163,7 +163,7 @@ def delete_user_adm(id: int, token: str = Depends(oauth2_scheme)):
 
         
 # portfolio datas controller ------------
-@app.get('/portfolio-datas', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+@app.get('/portfolio-datas/{idUser}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def get_all_portfolio_datas(idUser: int, token: str = Depends(oauth2_scheme)):
         try:
                 return portfolio_datas_repository.getAll(idUser)
