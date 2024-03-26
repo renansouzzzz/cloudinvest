@@ -163,7 +163,7 @@ def delete_user_adm(id: int, token: str = Depends(oauth2_scheme)):
 
         
 # portfolio datas controller ------------
-@app.get('/portfolio-datas', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+@app.get('/portfolio-datas/user/{idUser}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def get_all_portfolio_datas(idUser: int, token: str = Depends(oauth2_scheme)):
         try:
                 return portfolio_datas_repository.getAll(idUser)
@@ -184,6 +184,13 @@ def create_portfolio_datas(payload: PortfolioDatasCreate, token: str = Depends(o
         except ValueError as e:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
+
+@app.delete('/portfolio-datas/delete', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas'])
+def create_portfolio_datas(id: int, token: str = Depends(oauth2_scheme)):
+        try:
+                return portfolio_datas_repository.delete(id)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)

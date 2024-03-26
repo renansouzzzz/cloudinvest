@@ -44,7 +44,7 @@ def delete(id: int):
             if not getPortfolioData:
                 raise HTTPException(status_code=404, detail="Informação não encontrada!")
             
-            session.execute(f"UPDATE port_datas SET active = false WHERE id = {id}")
+            session.delete(getPortfolioData)
             session.commit()
              
         except IntegrityError as e:
