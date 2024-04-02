@@ -15,14 +15,15 @@ class TagMonthsDatas(Enum):
     Dezembro = '12'  
         
 class ParseToTypes():
+    
     def parseMonthToStr(month: str):
+        
         match month:
             case 'Fevereiro':
                 return [TagMonthsDatas[month].value, '29']
             
-            case TagMonthsDatas.Abril, TagMonthsDatas.Junho, TagMonthsDatas.Setembro, TagMonthsDatas.Novembro:
+            case 'Abril' | 'Junho' | 'Setembro' | 'Novembro':
                 return [TagMonthsDatas[month].value, '30']
             
             case _:
-                return [TagMonthsDatas[month].value, '31']
-        
+                return [TagMonthsDatas[month].value, '31']       

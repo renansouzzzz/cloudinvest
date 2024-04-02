@@ -16,6 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from security.token.token_verify import Token
 
 from security.user_security.security_verify import authenticate_user
+from utils.parse_types import TagMonthsDatas
 
 origins = [
     "*",
