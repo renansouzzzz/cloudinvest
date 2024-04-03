@@ -1,8 +1,8 @@
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, Cookie, FastAPI, HTTPException, Response, status 
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import uvicorn
 
-from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile
+from models.user import User, UserCreate, UserUpdate, UserUpdateTypeProfile
 from models.user_adm import UserAdmCreate, UserAdmUpdate
 from models.portfolio_datas import PortfolioDatasCreate
 from models.token_data import TokenData
@@ -16,6 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from security.token.token_verify import Token
 
 from security.user_security.security_verify import authenticate_user
+
 
 origins = [
     "*",
@@ -67,17 +68,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return TokenData(access_token=access_token, user=userData)
 
 
-@app.get("/logout/", tags=['Logout'])
-async def logout(token: str = Depends(oauth2_scheme)):
-    token_data = Token.verify_token(token)
-    if token_data is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token inválido ou expirado",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-        
-    return {"message": "Logout realizado com sucesso"}
+@app.get("/logout", tags=['Logout'])
+async def logout(response: Response, token: str = Cookie(None)):
+    response.delete_cookie("token")
+    return {"message": "Logout realizado com sucesso!"}
 
 
 @app.get("/users", tags=['User'])
@@ -164,7 +158,7 @@ def delete_user_adm(id: int, token: str = Depends(oauth2_scheme)):
         
 # portfolio datas controller ------------
 @app.get('/portfolio-datas/user/{idUser}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
-def get_all_portfolio_datas(idUser: int, token: str = Depends(oauth2_scheme)):
+def get_all_by_user_portfolio_datas(idUser: int, token: str = Depends(oauth2_scheme)):
         try:
                 return portfolio_datas_repository.getAll(idUser)
         except ValueError as e:
@@ -184,13 +178,20 @@ def create_portfolio_datas(payload: PortfolioDatasCreate, token: str = Depends(o
         except ValueError as e:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
-
 @app.delete('/portfolio-datas/delete', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas'])
-def create_portfolio_datas(id: int, token: str = Depends(oauth2_scheme)):
+def delete_portfolio_datas(id: int, token: str = Depends(oauth2_scheme)):
         try:
                 return portfolio_datas_repository.delete(id)
         except ValueError as e:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
+@app.get('/portfolio-datas/get-by-date/{idUser}', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas'])
+def get_by_date_portfolio_datas(idUser: int, month: str, year: int, token: str = Depends(oauth2_scheme)):
+        try:
+                return portfolio_datas_repository.getByDate(idUser, month, year)
+        except ValueError as e:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')        
+        
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)

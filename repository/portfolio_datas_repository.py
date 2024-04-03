@@ -1,15 +1,36 @@
 from MySQLdb import IntegrityError
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from datetime import datetime
+from sqlalchemy import and_
 
 from config.database import engine
 
 from schemas.portfolio_datas import PortfolioDatasMapped, PortfolioDatasSchema
+from utils.parse_types import ParseToTypes, TagMonthsDatas
         
 
 def getAll(idUser: int):
     with Session(engine) as session:
         data = session.query(PortfolioDatasMapped).filter(PortfolioDatasMapped.id_user == idUser).all()
+        if data is None:
+            raise ValueError(f'Nenhum usuário foi encontrado!')
+        return data
+    
+def getByDate(idUser: int, month: str, year: int):
+    with Session(engine) as session:
+        
+        monthStr = ParseToTypes.parseMonthToStr(month)
+        start_date = f'{year}-{monthStr[0]}-01 00:00:00:0000'
+        end_date = f'{year}-{monthStr[0]}-{monthStr[1]} 23:59:59:9999'
+        
+        data = session.query(PortfolioDatasMapped).filter(
+            and_(
+                PortfolioDatasMapped.id_user == idUser,
+                PortfolioDatasMapped.created_at.between(start_date, end_date)
+            )
+        ).all()
+        
         if data is None:
             raise ValueError(f'Nenhum usuário foi encontrado!')
         return data
