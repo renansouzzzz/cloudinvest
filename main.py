@@ -1,8 +1,8 @@
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, Cookie, FastAPI, HTTPException, Response, status 
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import uvicorn
 
-from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile
+from models.user import User, UserCreate, UserUpdate, UserUpdateTypeProfile
 from models.user_adm import UserAdmCreate, UserAdmUpdate
 from models.portfolio_datas import PortfolioDatasCreate
 from models.token_data import TokenData
@@ -16,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from security.token.token_verify import Token
 
 from security.user_security.security_verify import authenticate_user
-from utils.parse_types import TagMonthsDatas
+
 
 origins = [
     "*",
@@ -68,17 +68,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return TokenData(access_token=access_token, user=userData)
 
 
-@app.get("/logout/", tags=['Logout'])
-async def logout(token: str = Depends(oauth2_scheme)):
-    token_data = Token.verify_token(token)
-    if token_data is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token inválido ou expirado",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-        
-    return {"message": "Logout realizado com sucesso"}
+@app.get("/logout", tags=['Logout'])
+async def logout(response: Response, token: str = Cookie(None)):
+    response.delete_cookie("token")
+    return {"message": "Logout realizado com sucesso!"}
 
 
 @app.get("/users", tags=['User'])
