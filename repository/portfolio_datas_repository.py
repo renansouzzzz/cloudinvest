@@ -32,7 +32,7 @@ def getByDate(idUser: int, month: str, year: int):
         ).all()
         
         if data is None:
-            raise ValueError(f'Nenhum usuário foi encontrado!')
+            raise ValueError(f'Nenhum dado foi encontrado!')
         return data
     
 def getById(id: int):
