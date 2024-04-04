@@ -18,7 +18,6 @@ class PortfolioDatasSchema(Base):
     created_at = Column(DateTime, default=datetime.now)
     
     user = relationship('UserSchema')
-
     
 class PortfolioDatasMapped(PortfolioDatasSchema):
     pass
