@@ -6,7 +6,7 @@ from sqlalchemy import and_
 from config.database import engine
 
 from schemas.portfolio_datas import PortfolioDatasMapped, PortfolioDatasSchema
-from utils.parse_types import ParseToTypes, TagMonthsDatas
+from utils.parse_types import ParseToTypes
         
 
 def getAll(idUser: int):

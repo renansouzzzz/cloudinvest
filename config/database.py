@@ -9,7 +9,7 @@ from decouple import config
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
-engine = create_engine('mysql://root:ekmpbaWcKqqEGKSVmZBpONVNSHRGbbZu@viaduct.proxy.rlwy.net:58592/railway')
+engine = create_engine('mysql://root:PtAxspmdLRVqaMeCxdztmZEqLgItwvGD@viaduct.proxy.rlwy.net:20004/railway')
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
