@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, ForeignKey, DateTime
 from config.database import Base
 from sqlalchemy.orm import relationship
 
+
 class PortfolioDatasInstallmentsSchema(Base):
     __tablename__ = 'port_installments'
 
@@ -12,7 +13,7 @@ class PortfolioDatasInstallmentsSchema(Base):
     current_installment = Column(Integer, nullable=False)
     value_installment = Column(Integer, nullable=False)
     created_at = Column(DateTime, default=datetime.now)
-    
+
     user = relationship('UserSchema')
 
     port_datas = relationship('PortfolioDatasSchema')
