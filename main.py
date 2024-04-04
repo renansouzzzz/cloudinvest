@@ -2,7 +2,7 @@ from fastapi import Depends, Cookie, FastAPI, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import uvicorn
 
-from models.user import User, UserCreate, UserUpdate, UserUpdateTypeProfile
+from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile
 from models.user_adm import UserAdmCreate, UserAdmUpdate
 from models.portfolio_datas import PortfolioDatasCreate
 from models.token_data import TokenData
