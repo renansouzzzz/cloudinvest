@@ -1,7 +1,6 @@
 from MySQLdb import IntegrityError
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from datetime import datetime
 from sqlalchemy import and_
 
 from config.database import engine
