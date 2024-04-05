@@ -12,8 +12,22 @@ class TagMonthsDatas(Enum):
     Setembro = '09'
     Outubro = '10'
     Novembro = '11'
-    Dezembro = '12'  
-        
+    Dezembro = '12'
+
+class TagMonthsDays(Enum):
+    Janeiro = '01'
+    Fevereiro = '02'
+    Março = '03'
+    Abril = '04'
+    Maio = '05'
+    Junho = '06'
+    Julho = '07'
+    Agosto = '08'
+    Setembro = '09'
+    Outubro = '10'
+    Novembro = '11'
+    Dezembro = '12'
+
 class ParseToTypes():
     
     def parseMonthToStr(month: str):
@@ -26,4 +40,16 @@ class ParseToTypes():
                 return [TagMonthsDatas[month].value, '30']
             
             case _:
-                return [TagMonthsDatas[month].value, '31']       
+                return [TagMonthsDatas[month].value, '31']
+
+    def parseMonthToDays(month: int):
+
+        match month:
+            case 2:
+                return 29
+
+            case 4 | 6 | 9 | 11:
+                return 30
+
+            case _:
+                return 31

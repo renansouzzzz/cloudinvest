@@ -14,10 +14,10 @@ class PortfolioDatasSchema(Base):
     tag: TagDatasPortfolio = Column(Enum(TagDatasPortfolio))
     installment = Column(Integer, nullable=False)
     value = Column(Numeric(18,2), nullable=False)
+    expiration_day = Column(Integer, nullable=False)
     created_at = Column(DateTime, default=datetime.now)
     
     user = relationship('UserSchema')
-
     
 class PortfolioDatasMapped(PortfolioDatasSchema):
     pass

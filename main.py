@@ -1,14 +1,14 @@
-from fastapi import Depends, Cookie, FastAPI, HTTPException, Response, status 
+from fastapi import Depends, Cookie, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import uvicorn
 
-from models.user import User, UserCreate, UserUpdate, UserUpdateTypeProfile
+from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile
 from models.user_adm import UserAdmCreate, UserAdmUpdate
 from models.portfolio_datas import PortfolioDatasCreate
 from models.token_data import TokenData
 
 from config.database import Base, engine
-from repository import user_repository, user_adm_repository, portfolio_datas_repository
+from repository import user_repository, user_adm_repository, portfolio_datas_repository, port_installments_repository
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -190,8 +190,23 @@ def get_by_date_portfolio_datas(idUser: int, month: str, year: int, token: str =
         try:
                 return portfolio_datas_repository.getByDate(idUser, month, year)
         except ValueError as e:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')        
-        
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
+
+@app.get('/port-datas-installments', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas Installments'])
+def get_by_date_portfolio_datas(token: str = Depends(oauth2_scheme)):
+    try:
+        return port_installments_repository.getAll()
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
+@app.get('/port-datas-installments/get-by-date/{idUser}', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas Installments'])
+def get_by_date_portfolio_datas(idUser: int, month: str, year: int, token: str = Depends(oauth2_scheme)):
+    try:
+        return port_installments_repository.getByDate(idUser, month, year)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
