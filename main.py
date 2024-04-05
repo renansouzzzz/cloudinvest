@@ -200,6 +200,13 @@ def get_by_date_portfolio_datas(token: str = Depends(oauth2_scheme)):
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
+@app.get('/port-datas-installments/get-by-date/{idUser}', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas Installments'])
+def get_by_date_portfolio_datas(idUser: int, month: str, year: int, token: str = Depends(oauth2_scheme)):
+    try:
+        return port_installments_repository.getByDate(idUser, month, year)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
