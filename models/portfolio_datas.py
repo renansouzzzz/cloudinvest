@@ -14,6 +14,7 @@ class PortfolioDatas(BaseModel):
     id_user: int
     value: float
     tag: TagDatasPortfolio
+    expiration_day: int
     installment: int
     
     
