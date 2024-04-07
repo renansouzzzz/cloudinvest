@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from MySQLdb import IntegrityError
 from fastapi import HTTPException
@@ -62,11 +63,16 @@ def create(payload: PortfolioDatasSchema):
                 datetime.datetime.today().year, datetime.datetime.today().month - 1, portfolio_datas.expiration_day
             )
 
+            today = datetime.datetime.now().date()
+
             for i in range(portfolio_datas.installment):
                 days_in_month = ParseToTypes.parseMonthToDays(current_date.month)
                 current_date += datetime.timedelta(days=days_in_month)
+                if current_date < today:
+                    raise ValueError("A data do vencimento não pode ser retroativa ao dia de hoje!")
                 installment_dates.append(current_date)
 
+            installments = []
             for i, date in enumerate(installment_dates):
                 installment = PortfolioDatasInstallmentsMapped(
                     id_user=portfolio_datas.id_user,
@@ -76,8 +82,10 @@ def create(payload: PortfolioDatasSchema):
                     created_at=datetime.datetime.now(),
                     expiration_date=date
                 )
-                session.add(installment)
-                session.commit()
+                installments.append(installment)
+
+            session.bulk_save_objects(installments)
+            session.commit()
 
         except IntegrityError as e:
             session.rollback()
