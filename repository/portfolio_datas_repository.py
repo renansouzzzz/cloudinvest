@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from MySQLdb import IntegrityError
 from fastapi import HTTPException
@@ -55,29 +56,36 @@ def create(payload: PortfolioDatasSchema):
             session.commit()
             session.refresh(portfolio_datas)
 
-            installment_value = portfolio_datas.value / portfolio_datas.installment
-
             installment_dates = []
             current_date = datetime.date(
                 datetime.datetime.today().year, datetime.datetime.today().month - 1, portfolio_datas.expiration_day
             )
 
+            today = datetime.datetime.now().date()
+
             for i in range(portfolio_datas.installment):
                 days_in_month = ParseToTypes.parseMonthToDays(current_date.month)
                 current_date += datetime.timedelta(days=days_in_month)
+                if current_date < today:
+                    current_date = datetime.date(
+                        datetime.datetime.today().year, datetime.datetime.today().month + 1, portfolio_datas.expiration_day
+                    )
                 installment_dates.append(current_date)
 
+            installments = []
             for i, date in enumerate(installment_dates):
                 installment = PortfolioDatasInstallmentsMapped(
                     id_user=portfolio_datas.id_user,
                     id_port_datas=portfolio_datas.id,
                     current_installment=i + 1,
-                    value_installment=installment_value,
+                    value_installment=portfolio_datas.value/portfolio_datas.installment,
                     created_at=datetime.datetime.now(),
                     expiration_date=date
                 )
-                session.add(installment)
-                session.commit()
+                installments.append(installment)
+
+            session.bulk_save_objects(installments)
+            session.commit()
 
         except IntegrityError as e:
             session.rollback()
