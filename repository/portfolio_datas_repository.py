@@ -56,8 +56,6 @@ def create(payload: PortfolioDatasSchema):
             session.commit()
             session.refresh(portfolio_datas)
 
-            installment_value = portfolio_datas.value / portfolio_datas.installment
-
             installment_dates = []
             current_date = datetime.date(
                 datetime.datetime.today().year, datetime.datetime.today().month - 1, portfolio_datas.expiration_day
@@ -69,7 +67,9 @@ def create(payload: PortfolioDatasSchema):
                 days_in_month = ParseToTypes.parseMonthToDays(current_date.month)
                 current_date += datetime.timedelta(days=days_in_month)
                 if current_date < today:
-                    raise ValueError("A data do vencimento não pode ser retroativa ao dia de hoje!")
+                    current_date = datetime.date(
+                        datetime.datetime.today().year, datetime.datetime.today().month + 1, portfolio_datas.expiration_day
+                    )
                 installment_dates.append(current_date)
 
             installments = []
@@ -78,7 +78,7 @@ def create(payload: PortfolioDatasSchema):
                     id_user=portfolio_datas.id_user,
                     id_port_datas=portfolio_datas.id,
                     current_installment=i + 1,
-                    value_installment=installment_value,
+                    value_installment=portfolio_datas.value/portfolio_datas.installment,
                     created_at=datetime.datetime.now(),
                     expiration_date=date
                 )
