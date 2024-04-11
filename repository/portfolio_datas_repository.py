@@ -1,15 +1,13 @@
 import datetime
-import time
 
 from MySQLdb import IntegrityError
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
 from sqlalchemy import and_
+from sqlalchemy.orm import Session
 
 from config.database import engine
-
-from schemas.portfolio_datas import PortfolioDatasMapped, PortfolioDatasSchema
 from schemas.port_installments import PortfolioDatasInstallmentsMapped
+from schemas.portfolio_datas import PortfolioDatasMapped, PortfolioDatasSchema
 from utils.parse_types import ParseToTypes
 
 
@@ -55,6 +53,19 @@ def create(payload: PortfolioDatasSchema):
             session.add(portfolio_datas)
             session.commit()
             session.refresh(portfolio_datas)
+
+            if portfolio_datas.expiration_day is None and portfolio_datas.installment is None:
+                installment = PortfolioDatasInstallmentsMapped(
+                    id_user=portfolio_datas.id_user,
+                    id_port_datas=portfolio_datas.id,
+                    current_installment=None,
+                    value_installment=portfolio_datas.value,
+                    created_at=datetime.datetime.now(),
+                    expiration_date=None
+                )
+                session.add(installment)
+                session.commit()
+                return True
 
             installment_dates = []
             current_date = datetime.date(

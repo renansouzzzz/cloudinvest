@@ -10,10 +10,10 @@ class PortfolioDatasInstallmentsSchema(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=False)
     id_user = Column(Integer, ForeignKey('user.id', onupdate='CASCADE'), nullable=False)
     id_port_datas = Column(Integer, ForeignKey('port_datas.id', onupdate='CASCADE'), nullable=False)
-    current_installment = Column(Integer, nullable=False)
+    current_installment = Column(Integer, nullable=True)
     value_installment = Column(Numeric(18, 2), nullable=False)
     created_at = Column(DateTime, default=datetime.now)
-    expiration_date = Column(DateTime)
+    expiration_date = Column(DateTime, nullable=True)
 
     user = relationship('UserSchema')
 
