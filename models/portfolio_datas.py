@@ -14,8 +14,8 @@ class PortfolioDatas(BaseModel):
     id_user: int
     value: float
     tag: TagDatasPortfolio
-    expiration_day: int
-    installment: int
+    expiration_day: int | None
+    installment: int | None
     
     
 class PortfolioDatasGetAll(PortfolioDatas):
