@@ -12,9 +12,9 @@ class PortfolioDatasSchema(Base):
     id_user = Column(Integer, ForeignKey('user.id', onupdate='CASCADE'), nullable=False)
     name = Column(String(100), nullable=False)
     tag: TagDatasPortfolio = Column(Enum(TagDatasPortfolio))
-    installment = Column(Integer, nullable=False)
-    value = Column(Numeric(18,2), nullable=False)
-    expiration_day = Column(Integer, nullable=False)
+    installment = Column(Integer, nullable=True)
+    value = Column(Numeric(18, 2), nullable=False)
+    expiration_day = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
     
     user = relationship('UserSchema')
