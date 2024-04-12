@@ -124,6 +124,7 @@ def update(idPortDatas: int, payload: PortfolioDatasMapped):
 
             for installment, new_date in zip(port_installments, payload.installment_dates):
                 installment.created_at = new_date
+                installment.value_installment = payload.value/payload.installment
                 session.add(installment)
 
         except IntegrityError as e:
