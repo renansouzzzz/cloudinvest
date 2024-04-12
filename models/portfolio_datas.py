@@ -6,7 +6,7 @@ from enum import Enum
 class TagDatasPortfolio(Enum):
     Receitas = 0
     Despesas = 1
-    Investimento = 2
+    Investimentos = 2
 
 
 class PortfolioDatas(BaseModel):

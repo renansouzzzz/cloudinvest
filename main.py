@@ -148,9 +148,9 @@ def create_user_adm(payload: UserAdmCreate, token: str = Depends(oauth2_scheme))
 
 
 @app.put("/users-adm/update/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['UserAdm'])
-def update_user_adm(user: UserAdmUpdate, id: int, token: str = Depends(oauth2_scheme)):
+def update_user_adm(user: UserAdmUpdate, idUserAdm: int, token: str = Depends(oauth2_scheme)):
     try:
-        return user_adm_repository.update(user, id)
+        return user_adm_repository.update(user, idUserAdm)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
@@ -173,9 +173,9 @@ def get_all_by_user_portfolio_datas(idUser: int, token: str = Depends(oauth2_sch
 
 
 @app.get('/portfolio-datas/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
-def get_portfolio_datas(id: int, token: str = Depends(oauth2_scheme)):
+def get_portfolio_datas(idPortDatas: int, token: str = Depends(oauth2_scheme)):
     try:
-        return portfolio_datas_repository.getById(id)
+        return portfolio_datas_repository.getById(idPortDatas)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
@@ -189,9 +189,9 @@ def create_portfolio_datas(payload: PortfolioDatasCreate, token: str = Depends(o
 
 
 @app.delete('/portfolio-datas/delete', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas'])
-def delete_portfolio_datas(id: int, token: str = Depends(oauth2_scheme)):
+def delete_portfolio_datas(idPortDatas: int, token: str = Depends(oauth2_scheme)):
     try:
-        return portfolio_datas_repository.delete(id)
+        return portfolio_datas_repository.delete(idPortDatas)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
@@ -204,21 +204,12 @@ def get_by_date_portfolio_datas(idUser: int, month: str, year: int, token: str =
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
-@app.get('/portfolio-datas', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas Installments'])
-def get_all_portfolio_datas(token: str = Depends(oauth2_scheme)):
-    try:
-        return port_installments_repository.getAll()
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
-
 @app.put('/portfolio-datas/update', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
-def update_portfolio_datas(idPortDatas: int, payload: PortfolioDatasUpdate):
+def update_portfolio_datas(idPortDatas: int, payload: PortfolioDatasUpdate, token: str = Depends(oauth2_scheme)):
     try:
         return portfolio_datas_repository.update(idPortDatas, payload)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
-
-
 
 
 # ---------- portfolio datas installments
@@ -228,6 +219,14 @@ def update_portfolio_datas(idPortDatas: int, payload: PortfolioDatasUpdate):
 def get_by_date_portfolio_datas(idUser: int, month: str, year: int, token: str = Depends(oauth2_scheme)):
     try:
         return port_installments_repository.getByDate(idUser, month, year)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
+
+@app.get('/portfolio-datas-installments', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas Installments'])
+def get_all_portfolio_datas(token: str = Depends(oauth2_scheme)):
+    try:
+        return port_installments_repository.getAll()
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
