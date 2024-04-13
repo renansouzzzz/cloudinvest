@@ -137,10 +137,21 @@ def update(idPortDatas: int, payload: PortfolioDatasUpdate):
     return True
 
 
-def delete(id: int):
+def delete(idPortDatas: int):
     with Session(engine) as session:
         try:
-            getPortfolioData = session.get(PortfolioDatasSchema, id)
+            getInstallments = session.query(PortfolioDatasInstallmentsMapped).filter(
+                PortfolioDatasInstallmentsMapped.id_port_datas == idPortDatas
+            ).all()
+
+            if not getInstallments:
+                raise HTTPException(status_code=404, detail="Informação não encontrada!")
+
+            for installment in getInstallments:
+                session.delete(installment)
+            session.commit()
+
+            getPortfolioData = session.get(PortfolioDatasMapped, idPortDatas)
 
             if not getPortfolioData:
                 raise HTTPException(status_code=404, detail="Informação não encontrada!")
