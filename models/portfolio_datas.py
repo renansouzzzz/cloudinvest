@@ -1,13 +1,16 @@
 from datetime import datetime
+from typing import List
+
 from pydantic import BaseModel, Field
 
 from enum import Enum
 
+
 class TagDatasPortfolio(Enum):
-    RendaMensal = 0
-    DespesasMensais = 1
-    DividasRecorrentes = 2
-    DividasEmAtraso = 3
+    Receitas = 0
+    Despesas = 1
+    Investimentos = 2
+
 
 class PortfolioDatas(BaseModel):
     name: str = Field(..., max_length=50)
@@ -16,13 +19,15 @@ class PortfolioDatas(BaseModel):
     tag: TagDatasPortfolio
     expiration_day: int | None
     installment: int | None
-    
-    
+
+
 class PortfolioDatasGetAll(PortfolioDatas):
     created_at: datetime = Field(default_factory=datetime.now)
-    
+
+
 class PortfolioDatasCreate(PortfolioDatas):
     pass
+
 
 class PortfolioDatasUpdate(PortfolioDatas):
     pass

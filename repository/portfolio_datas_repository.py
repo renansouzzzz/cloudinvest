@@ -1,11 +1,12 @@
 import datetime
 
 from MySQLdb import IntegrityError
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from config.database import engine
+from models.portfolio_datas import PortfolioDatasUpdate
 from schemas.port_installments import PortfolioDatasInstallmentsMapped
 from schemas.portfolio_datas import PortfolioDatasMapped, PortfolioDatasSchema
 from utils.parse_types import ParseToTypes
@@ -45,7 +46,7 @@ def getById(id: int):
         return data
 
 
-def create(payload: PortfolioDatasSchema):
+def create(payload: PortfolioDatasMapped):
     with Session(engine) as session:
         try:
             portfolio_datas = PortfolioDatasMapped(**payload.dict())
@@ -79,7 +80,8 @@ def create(payload: PortfolioDatasSchema):
                 current_date += datetime.timedelta(days=days_in_month)
                 if current_date < today:
                     current_date = datetime.date(
-                        datetime.datetime.today().year, datetime.datetime.today().month + 1, portfolio_datas.expiration_day
+                        datetime.datetime.today().year, datetime.datetime.today().month + 1,
+                        portfolio_datas.expiration_day
                     )
                 installment_dates.append(current_date)
 
@@ -89,7 +91,7 @@ def create(payload: PortfolioDatasSchema):
                     id_user=portfolio_datas.id_user,
                     id_port_datas=portfolio_datas.id,
                     current_installment=i + 1,
-                    value_installment=portfolio_datas.value/portfolio_datas.installment,
+                    value_installment=portfolio_datas.value / portfolio_datas.installment,
                     created_at=datetime.datetime.now(),
                     expiration_date=date
                 )
@@ -105,10 +107,49 @@ def create(payload: PortfolioDatasSchema):
         return True
 
 
-def delete(id: int):
+def update(idPortDatas: int, payload: PortfolioDatasUpdate):
     with Session(engine) as session:
         try:
-            getPortfolioData = session.get(PortfolioDatasSchema, id)
+            get_port_datas = session.query(PortfolioDatasMapped).filter(
+                PortfolioDatasMapped.id == idPortDatas
+            ).one_or_none()
+
+            for var, value in vars(payload).items():
+                setattr(get_port_datas, var, value)
+
+            session.add(get_port_datas)
+
+            port_installments = session.query(PortfolioDatasInstallmentsMapped).filter(
+                PortfolioDatasInstallmentsMapped.id_port_datas == get_port_datas.id
+            ).all()
+
+            for installment in port_installments:
+                installment.value_installment = payload.value/payload.installment
+                session.add(installment)
+
+            session.commit()
+
+        except IntegrityError as e:
+            session.rollback()
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'Error on database: {e}')
+
+    return True
+
+
+def delete(idPortDatas: int):
+    with Session(engine) as session:
+        try:
+            getInstallments = session.query(PortfolioDatasInstallmentsMapped).filter(
+                PortfolioDatasInstallmentsMapped.id_port_datas == idPortDatas
+            ).all()
+
+            if not getInstallments:
+                raise HTTPException(status_code=404, detail="Informação não encontrada!")
+
+            for installment in getInstallments:
+                session.delete(installment)
+
+            getPortfolioData = session.get(PortfolioDatasMapped, idPortDatas)
 
             if not getPortfolioData:
                 raise HTTPException(status_code=404, detail="Informação não encontrada!")

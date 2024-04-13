@@ -1,4 +1,6 @@
+from fastapi import HTTPException
 from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from config.database import engine
@@ -28,5 +30,5 @@ def getByDate(idUser: int, month: str, year: int):
         ).all()
 
         if data is None:
-            raise ValueError(f'Nenhum dado foi encontrado!')
+            raise ValueError('Nenhum dado foi encontrado!')
         return data
