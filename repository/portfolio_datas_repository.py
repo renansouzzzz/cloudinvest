@@ -118,7 +118,6 @@ def update(idPortDatas: int, payload: PortfolioDatasUpdate):
                 setattr(get_port_datas, var, value)
 
             session.add(get_port_datas)
-            session.commit()
 
             port_installments = session.query(PortfolioDatasInstallmentsMapped).filter(
                 PortfolioDatasInstallmentsMapped.id_port_datas == get_port_datas.id
@@ -149,7 +148,6 @@ def delete(idPortDatas: int):
 
             for installment in getInstallments:
                 session.delete(installment)
-            session.commit()
 
             getPortfolioData = session.get(PortfolioDatasMapped, idPortDatas)
 
