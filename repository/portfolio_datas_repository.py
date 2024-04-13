@@ -6,6 +6,7 @@ from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from config.database import engine
+from models.portfolio_datas import PortfolioDatasUpdate
 from schemas.port_installments import PortfolioDatasInstallmentsMapped
 from schemas.portfolio_datas import PortfolioDatasMapped, PortfolioDatasSchema
 from utils.parse_types import ParseToTypes
@@ -106,26 +107,28 @@ def create(payload: PortfolioDatasMapped):
         return True
 
 
-def update(idPortDatas: int, payload: PortfolioDatasMapped):
+def update(idPortDatas: int, payload: PortfolioDatasUpdate):
     with Session(engine) as session:
         try:
             get_port_datas = session.query(PortfolioDatasMapped).filter(
-                PortfolioDatasMapped.id == idPortDatas).one_or_none()
+                PortfolioDatasMapped.id == idPortDatas
+            ).one_or_none()
 
             for var, value in vars(payload).items():
                 setattr(get_port_datas, var, value)
 
-            session.add(payload)
+            session.add(get_port_datas)
             session.commit()
 
             port_installments = session.query(PortfolioDatasInstallmentsMapped).filter(
                 PortfolioDatasInstallmentsMapped.id_port_datas == get_port_datas.id
             ).all()
 
-            for installment, new_date in zip(port_installments, payload.installment_dates):
-                installment.created_at = new_date
+            for installment in port_installments:
                 installment.value_installment = payload.value/payload.installment
                 session.add(installment)
+
+            session.commit()
 
         except IntegrityError as e:
             session.rollback()
