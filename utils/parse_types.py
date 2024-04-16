@@ -1,5 +1,6 @@
 from enum import Enum
-    
+
+
 class TagMonthsDatas(Enum):
     Janeiro = '01'
     Fevereiro = '02'
@@ -14,37 +15,24 @@ class TagMonthsDatas(Enum):
     Novembro = '11'
     Dezembro = '12'
 
-class TagMonthsDays(Enum):
-    Janeiro = '01'
-    Fevereiro = '02'
-    Março = '03'
-    Abril = '04'
-    Maio = '05'
-    Junho = '06'
-    Julho = '07'
-    Agosto = '08'
-    Setembro = '09'
-    Outubro = '10'
-    Novembro = '11'
-    Dezembro = '12'
 
-class ParseToTypes():
-    
-    def parseMonthToStr(month: str):
-        
-        match month:
+class ParseToTypes:
+
+    def parseMonthToStr(self: str):
+
+        match self:
             case 'Fevereiro':
-                return [TagMonthsDatas[month].value, '29']
-            
+                return [TagMonthsDatas[self].value, '29']
+
             case 'Abril' | 'Junho' | 'Setembro' | 'Novembro':
-                return [TagMonthsDatas[month].value, '30']
-            
+                return [TagMonthsDatas[self].value, '30']
+
             case _:
-                return [TagMonthsDatas[month].value, '31']
+                return [TagMonthsDatas[self].value, '31']
 
-    def parseMonthToDays(month: int):
+    def parseMonthToDays(self: int):
 
-        match month:
+        match self:
             case 2:
                 return 29
 
