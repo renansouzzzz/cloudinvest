@@ -38,9 +38,9 @@ def create(payload: UserAdmCreate):
             session.add(user)
             session.commit()
             session.refresh(user)
-        except:
+        except IntegrityError as e:
             session.rollback()
-            raise HTTPException(status_code=400, detail='Erro ao adicionar um novo usuário administrador!')
+            raise HTTPException(status_code=400, detail=f'Error on database: {e}')
 
         return user
 
