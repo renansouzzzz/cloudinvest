@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from config.database import engine
 from models.portfolio_datas import PortfolioDatasUpdate
 from schemas.port_installments import PortfolioDatasInstallmentsMapped
-from schemas.portfolio_datas import PortfolioDatasMapped, PortfolioDatasSchema
+from schemas.portfolio_datas import PortfolioDatasMapped
 from utils.parse_types import ParseToTypes
 
 
@@ -62,7 +62,7 @@ def create(payload: PortfolioDatasMapped):
                     current_installment=None,
                     value_installment=portfolio_datas.value,
                     created_at=datetime.datetime.now(),
-                    expiration_date=None
+                    expiration_date=datetime.datetime.now()
                 )
                 session.add(installment)
                 session.commit()
