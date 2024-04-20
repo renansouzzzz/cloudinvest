@@ -6,7 +6,7 @@ from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from config.database import engine
-from models.portfolio_datas import PortfolioDatasUpdate
+from models.portfolio_datas import PortfolioDatasUpdate, TagDatasPortfolio
 from schemas.port_installments import PortfolioDatasInstallmentsMapped
 from schemas.portfolio_datas import PortfolioDatasMapped
 from utils.parse_types import ParseToTypes
@@ -36,6 +36,36 @@ def getByDate(idUser: int, month: str, year: int):
         if data is None:
             raise ValueError(f'Nenhum dado foi encontrado!')
         return data
+
+
+def calculatePortfolioBalance(idUser: int):
+    with Session(engine) as session:
+        dataRevenues = session.query(PortfolioDatasMapped).filter(
+            and_(
+                PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas,
+                PortfolioDatasMapped.id_user == idUser
+            )
+        ).all()
+
+        dataExpenses = session.query(PortfolioDatasMapped).filter(
+            and_(
+                PortfolioDatasMapped.tag == TagDatasPortfolio.Despesas,
+                PortfolioDatasMapped.id_user == idUser
+            )
+        ).all()
+
+        if not dataRevenues or not dataExpenses:
+            raise ValueError(f'Nenhum dado foi encontrado!')
+
+        total_revenues = sum(
+            data.value for data in dataRevenues
+        )
+
+        total_expenses = sum(
+            data.value for data in dataExpenses
+        )
+
+        return total_revenues - total_expenses
 
 
 def getById(id: int):
@@ -124,7 +154,7 @@ def update(idPortDatas: int, payload: PortfolioDatasUpdate):
             ).all()
 
             for installment in port_installments:
-                installment.value_installment = payload.value/payload.installment
+                installment.value_installment = payload.value / payload.installment
                 session.add(installment)
 
             session.commit()
