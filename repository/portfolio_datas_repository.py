@@ -54,18 +54,10 @@ def calculatePortfolioBalance(idUser: int):
             )
         ).all()
 
-        if not dataRevenues or not dataExpenses:
+        if not dataRevenues and not dataExpenses:
             raise ValueError(f'Nenhum dado foi encontrado!')
 
-        total_revenues = sum(
-            data.value for data in dataRevenues
-        )
-
-        total_expenses = sum(
-            data.value for data in dataExpenses
-        )
-
-        return total_revenues - total_expenses
+        return sum(data.value for data in dataRevenues) - sum(data.value for data in dataExpenses)
 
 
 def getById(id: int):
