@@ -37,13 +37,16 @@ def getByDate(idUser: int, month: str, year: int):
         start_date = f'{year}-{monthStr[0]}-01 00:00:00:0000'
         end_date = f'{year}-{monthStr[0]}-{monthStr[1]} 23:59:59:9999'
 
-        data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped).filter(
-            and_(
-                PortfolioDatasMapped.id_user == PortfolioDatasInstallmentsMapped.id_user,
-                PortfolioDatasInstallmentsMapped.id_user == idUser,
-                PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date)
-            )
-        ).all()
+        data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped). \
+            join(PortfolioDatasMapped,
+                 and_(PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
+                      PortfolioDatasMapped.id_user == idUser)). \
+            filter(PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date),
+                   PortfolioDatasInstallmentsMapped.id_user == idUser). \
+            all()
+
+        if data is None:
+            raise ValueError('Nenhum dado foi encontrado!')
 
         unified_list = []
 
@@ -63,6 +66,4 @@ def getByDate(idUser: int, month: str, year: int):
             )
             unified_list.append(unified_datas)
 
-        if data is None:
-            raise ValueError('Nenhum dado foi encontrado!')
         return unified_list
