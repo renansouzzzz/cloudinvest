@@ -40,6 +40,7 @@ def getByDate(idUser: int, month: str, year: int):
         data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped).filter(
             and_(
                 PortfolioDatasMapped.id_user == PortfolioDatasInstallmentsMapped.id_user,
+                PortfolioDatasInstallmentsMapped.id_user == idUser,
                 PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date)
             )
         ).all()
