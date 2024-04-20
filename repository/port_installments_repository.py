@@ -8,7 +8,8 @@ from utils.parse_types import ParseToTypes
 
 
 class UnifiedData:
-    def __init__(self, idPortData, idUser, name, tag, installment, value, expiration_day, created_at, current_installment, value_installment, expiration_date):
+    def __init__(self, idPortData, idUser, name, tag, installment, value, expiration_day, created_at,
+                 current_installment, value_installment, expiration_date):
         self.idPortData = idPortData
         self.idUser = idUser
         self.name = name
@@ -20,7 +21,6 @@ class UnifiedData:
         self.current_installment = current_installment
         self.value_installment = value_installment
         self.expiration_date = expiration_date
-
 
 
 def getAll():
