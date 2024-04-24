@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, Numeric, ForeignKey, String, Enum, DateT
 from config.database import Base
 from sqlalchemy.orm import relationship
 from models.portfolio_datas import TagDatasPortfolio
-    
+
 
 class PortfolioDatasSchema(Base):
     __tablename__ = 'port_datas'
@@ -16,8 +16,9 @@ class PortfolioDatasSchema(Base):
     value = Column(Numeric(18, 2), nullable=False)
     expiration_day = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
-    
+
     user = relationship('UserSchema')
-    
+
+
 class PortfolioDatasMapped(PortfolioDatasSchema):
     pass
