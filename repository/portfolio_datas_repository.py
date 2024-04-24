@@ -60,6 +60,35 @@ def calculatePortfolioBalance(idUser: int):
         return sum(data.value for data in dataRevenues) - sum(data.value for data in dataExpenses)
 
 
+def calculatePortfolioRevenuesTotals(idUser: int):
+    with Session(engine) as session:
+        dataRevenues = session.query(PortfolioDatasMapped).filter(
+            and_(
+                PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas,
+                PortfolioDatasMapped.id_user == idUser
+            )
+        ).all()
+
+        if not dataRevenues:
+            raise ValueError(f'Nenhum dado foi encontrado!')
+
+        return sum(data.value for data in dataRevenues)
+
+
+def calculatePortfolioExpensesTotals(idUser: int):
+    with Session(engine) as session:
+        dataExpenses = session.query(PortfolioDatasMapped).filter(
+            and_(
+                PortfolioDatasMapped.tag == TagDatasPortfolio.Despesas,
+                PortfolioDatasMapped.id_user == idUser
+            )
+        ).all()
+
+        if not dataExpenses:
+            raise ValueError(f'Nenhum dado foi encontrado!')
+        return 0 - sum(data.value for data in dataExpenses)
+
+
 def getById(id: int):
     with Session(engine) as session:
         data = session.get(PortfolioDatasMapped, id)

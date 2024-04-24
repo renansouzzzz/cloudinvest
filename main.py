@@ -186,6 +186,20 @@ def calculate_portfolio_balance(idUser: int, token: str = Depends(oauth2_scheme)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
+@app.get('/portfolio-datas/calculate/total-revenues/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+def calculate_portfolio_revenues(idUser: int, token: str = Depends(oauth2_scheme)):
+    try:
+        return portfolio_datas_repository.calculatePortfolioRevenuesTotals(idUser)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
+@app.get('/portfolio-datas/calculate/total-expenses/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+def calculate_portfolio_expenses(idUser: int, token: str = Depends(oauth2_scheme)):
+    try:
+        return portfolio_datas_repository.calculatePortfolioExpensesTotals(idUser)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
 
 @app.post('/portfolio-datas/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio Datas'])
 def create_portfolio_datas(payload: PortfolioDatasCreate, token: str = Depends(oauth2_scheme)):
