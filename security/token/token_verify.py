@@ -3,11 +3,11 @@ from fastapi.security import OAuth2PasswordBearer
 
 import jwt
 
-SECRET_KEY='planeyourlife'
-ALGORITHM='HS256'
-
+SECRET_KEY = 'planeyourlife'
+ALGORITHM = 'HS256'
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 class Token:
     @staticmethod
@@ -21,7 +21,6 @@ class Token:
                 detail="Token inválido ou expirado",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-
 
     @staticmethod
     def create_access_token(username: str):

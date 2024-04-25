@@ -23,8 +23,9 @@ def getAll(idUser: int):
 def getByDate(idUser: int, month: str, year: int):
     with Session(engine) as session:
         monthStr = ParseToTypes.parseMonthToStr(month)
-        start_date = f'{year}-{monthStr[0]}-01 00:00:00:0000'
-        end_date = f'{year}-{monthStr[0]}-{monthStr[1]} 23:59:59:9999'
+
+        start_date = datetime.datetime(year, int(monthStr[0]), 1, 0, 0, 0, 0)
+        end_date = datetime.datetime(year, int(monthStr[0]), int(monthStr[1]), 23, 59, 59, 9999)
 
         data = session.query(PortfolioDatasMapped).filter(
             and_(
@@ -58,6 +59,35 @@ def calculatePortfolioBalance(idUser: int):
             raise ValueError(f'Nenhum dado foi encontrado!')
 
         return sum(data.value for data in dataRevenues) - sum(data.value for data in dataExpenses)
+
+
+def calculatePortfolioRevenuesTotals(idUser: int):
+    with Session(engine) as session:
+        dataRevenues = session.query(PortfolioDatasMapped).filter(
+            and_(
+                PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas,
+                PortfolioDatasMapped.id_user == idUser
+            )
+        ).all()
+
+        if not dataRevenues:
+            raise ValueError(f'Nenhum dado foi encontrado!')
+
+        return sum(data.value for data in dataRevenues)
+
+
+def calculatePortfolioExpensesTotals(idUser: int):
+    with Session(engine) as session:
+        dataExpenses = session.query(PortfolioDatasMapped).filter(
+            and_(
+                PortfolioDatasMapped.tag == TagDatasPortfolio.Despesas,
+                PortfolioDatasMapped.id_user == idUser
+            )
+        ).all()
+
+        if not dataExpenses:
+            raise ValueError(f'Nenhum dado foi encontrado!')
+        return 0 - sum(data.value for data in dataExpenses)
 
 
 def getById(id: int):
