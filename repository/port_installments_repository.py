@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
@@ -34,8 +36,9 @@ def getAll():
 def getByDate(idUser: int, month: str, year: int):
     with Session(engine) as session:
         monthStr = ParseToTypes.parseMonthToStr(month)
-        start_date = f'{year}-{monthStr[0]}-01 00:00:00:0000'
-        end_date = f'{year}-{monthStr[0]}-{monthStr[1]} 23:59:59:9999'
+
+        start_date = datetime(year, int(monthStr[0]), 1, 0, 0, 0, 0)
+        end_date = datetime(year, int(monthStr[0]), int(monthStr[1]), 23, 59, 59, 9999)
 
         data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped). \
             join(PortfolioDatasMapped,
