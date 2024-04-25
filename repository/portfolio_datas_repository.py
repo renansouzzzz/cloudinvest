@@ -23,8 +23,9 @@ def getAll(idUser: int):
 def getByDate(idUser: int, month: str, year: int):
     with Session(engine) as session:
         monthStr = ParseToTypes.parseMonthToStr(month)
-        start_date = f'{year}-{monthStr[0]}-01 00:00:00:0000'
-        end_date = f'{year}-{monthStr[0]}-{monthStr[1]} 23:59:59:9999'
+
+        start_date = datetime.datetime(year, int(monthStr[0]), 1, 0, 0, 0, 0)
+        end_date = datetime.datetime(year, int(monthStr[0]), int(monthStr[1]), 23, 59, 59, 9999)
 
         data = session.query(PortfolioDatasMapped).filter(
             and_(

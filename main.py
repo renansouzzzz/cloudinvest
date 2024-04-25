@@ -188,7 +188,7 @@ def calculate_portfolio_balance(idUser: int, token: str = Depends(oauth2_scheme)
 
 @app.get('/portfolio-datas/calculate/total-revenues/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def calculate_portfolio_revenues(idUser: int, token: str = Depends(oauth2_scheme)):
-    try:
+    try: 
         return portfolio_datas_repository.calculatePortfolioRevenuesTotals(idUser)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
