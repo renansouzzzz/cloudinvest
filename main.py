@@ -8,7 +8,8 @@ from models.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
 from models.token_data import TokenData
 
 from config.database import Base, engine
-from repository import user_repository, user_adm_repository, portfolio_datas_repository, port_installments_repository
+from repository import user_repository, user_adm_repository, portfolio_datas_repository, port_installments_repository, \
+    tracking_repository
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -179,6 +180,7 @@ def get_portfolio_datas(idPortDatas: int, token: str = Depends(oauth2_scheme)):
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
+
 @app.get('/portfolio-datas/calculate/total-balance/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def calculate_portfolio_balance(idUser: int, token: str = Depends(oauth2_scheme)):
     try:
@@ -186,12 +188,14 @@ def calculate_portfolio_balance(idUser: int, token: str = Depends(oauth2_scheme)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
+
 @app.get('/portfolio-datas/calculate/total-revenues/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def calculate_portfolio_revenues(idUser: int, token: str = Depends(oauth2_scheme)):
-    try: 
+    try:
         return portfolio_datas_repository.calculatePortfolioRevenuesTotals(idUser)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
 
 @app.get('/portfolio-datas/calculate/total-expenses/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def calculate_portfolio_expenses(idUser: int, token: str = Depends(oauth2_scheme)):
@@ -248,6 +252,16 @@ def get_by_date_portfolio_datas(idUser: int, month: str, year: int, token: str =
 def get_all_portfolio_datas(token: str = Depends(oauth2_scheme)):
     try:
         return port_installments_repository.getAll()
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
+
+# --------------- TRACKING
+
+@app.get('/tracking/{idUser}', status_code=status.HTTP_202_ACCEPTED, tags=['Tracking'])
+def put_tracking_user(idUser: int, token: str = Depends(oauth2_scheme)):
+    try:
+        return tracking_repository.updateProfileByTracking(idUser)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
