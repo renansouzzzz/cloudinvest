@@ -42,7 +42,7 @@ def getByEmail(email):
             if user is None:
                 raise ValueError(f'O usuário com email {email} não foi encontrado!')
 
-            #user.password = fernet.decrypt(user.password.encode()).decode()
+            # user.password = fernet.decrypt(user.password.encode()).decode()
 
         except InvalidToken as e:
             raise ValueError(
@@ -57,7 +57,7 @@ def create(payload: UserCreate):
         try:
             user = UserSchema(**payload.dict())
 
-            #user.password = fernet.encrypt(user.password.encode())
+            # user.password = fernet.encrypt(user.password.encode())
 
             session.add(user)
             session.commit()
