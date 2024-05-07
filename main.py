@@ -205,6 +205,14 @@ def calculate_portfolio_expenses(idUser: int, token: str = Depends(oauth2_scheme
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
+@app.get('/portfolio-datas/calculate/total-investiments/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+def calculate_portfolio_investiments(idUser: int, token: str = Depends(oauth2_scheme)):
+    try:
+        return portfolio_datas_repository.calculatePortfolioInvestimentTotals(idUser)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
+
 @app.post('/portfolio-datas/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio Datas'])
 def create_portfolio_datas(payload: PortfolioDatasCreate, token: str = Depends(oauth2_scheme)):
     try:

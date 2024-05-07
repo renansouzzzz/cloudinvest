@@ -90,6 +90,20 @@ def calculatePortfolioExpensesTotals(idUser: int):
         return 0 - sum(data.value for data in dataExpenses)
 
 
+def calculatePortfolioInvestimentTotals(idUser: int):
+    with Session(engine) as session:
+        dataInvestiment = session.query(PortfolioDatasMapped).filter(
+            and_(
+                PortfolioDatasMapped.tag == TagDatasPortfolio.Investimentos,
+                PortfolioDatasMapped.id_user == idUser
+            )
+        ).all()
+
+        if not dataInvestiment:
+            raise ValueError(f'Nenhum dado foi encontrado!')
+        return sum(data.value for data in dataInvestiment)
+
+
 def getById(id: int):
     with Session(engine) as session:
         data = session.get(PortfolioDatasMapped, id)
