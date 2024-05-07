@@ -221,7 +221,7 @@ def create_portfolio_datas(payload: PortfolioDatasCreate, token: str = Depends(o
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
-@app.delete('/portfolio-datas/delete', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas'])
+@app.delete('/portfolio-datas/delete/{idPortDatas}', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas'])
 def delete_portfolio_datas(idPortDatas: int, token: str = Depends(oauth2_scheme)):
     try:
         return portfolio_datas_repository.delete(idPortDatas)
