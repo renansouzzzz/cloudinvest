@@ -174,7 +174,7 @@ def get_all_by_user_portfolio_datas(idUser: int, token: str = Depends(oauth2_sch
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
-@app.get('/portfolio-datas/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+@app.get('/portfolio-datas/{idUser}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def get_portfolio_datas(idPortDatas: int, token: str = Depends(oauth2_scheme)):
     try:
         return portfolio_datas_repository.getById(idPortDatas)
@@ -182,7 +182,7 @@ def get_portfolio_datas(idPortDatas: int, token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
-@app.get('/portfolio-datas/calculate/total-balance/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+@app.get('/portfolio-datas/calculate/total-balance/{idUser}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def calculate_portfolio_balance(idUser: int, token: str = Depends(oauth2_scheme)):
     try:
         return portfolio_datas_repository.calculatePortfolioBalance(idUser)
@@ -190,7 +190,7 @@ def calculate_portfolio_balance(idUser: int, token: str = Depends(oauth2_scheme)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
-@app.get('/portfolio-datas/calculate/total-revenues/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+@app.get('/portfolio-datas/calculate/total-revenues/{idUser}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def calculate_portfolio_revenues(idUser: int, token: str = Depends(oauth2_scheme)):
     try:
         return portfolio_datas_repository.calculatePortfolioRevenuesTotals(idUser)
@@ -198,7 +198,7 @@ def calculate_portfolio_revenues(idUser: int, token: str = Depends(oauth2_scheme
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
-@app.get('/portfolio-datas/calculate/total-expenses/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+@app.get('/portfolio-datas/calculate/total-expenses/{idUser}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def calculate_portfolio_expenses(idUser: int, token: str = Depends(oauth2_scheme)):
     try:
         return portfolio_datas_repository.calculatePortfolioExpensesTotals(idUser)
@@ -206,7 +206,7 @@ def calculate_portfolio_expenses(idUser: int, token: str = Depends(oauth2_scheme
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
-@app.get('/portfolio-datas/calculate/total-investiments/{id}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+@app.get('/portfolio-datas/calculate/total-investiments/{idUser}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def calculate_portfolio_investiments(idUser: int, token: str = Depends(oauth2_scheme)):
     try:
         return portfolio_datas_repository.calculatePortfolioInvestimentTotals(idUser)
