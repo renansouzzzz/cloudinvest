@@ -116,7 +116,7 @@ def create(payload: PortfolioDatasMapped):
     with Session(engine) as session:
         try:
             portfolio_datas = PortfolioDatasMapped(**payload.dict())
-
+        
             session.add(portfolio_datas)
             session.commit()
             session.refresh(portfolio_datas)
@@ -128,7 +128,8 @@ def create(payload: PortfolioDatasMapped):
                     current_installment=None,
                     value_installment=portfolio_datas.value,
                     created_at=datetime.datetime.now(),
-                    expiration_date=datetime.datetime.now()
+                    expiration_date=datetime.datetime.now(),
+                    is_recurring=portfolio_datas.is_recurring
                 )
                 session.add(installment)
                 session.commit()
@@ -159,7 +160,8 @@ def create(payload: PortfolioDatasMapped):
                     current_installment=i + 1,
                     value_installment=portfolio_datas.value / portfolio_datas.installment,
                     created_at=datetime.datetime.now(),
-                    expiration_date=date
+                    expiration_date=date,
+                    is_recurring=portfolio_datas.is_recurring
                 )
                 installments.append(installment)
 

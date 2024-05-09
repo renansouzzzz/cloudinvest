@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, Numeric, ForeignKey, String, Enum, DateTime
+from sqlalchemy import Column, Integer, Numeric, ForeignKey, String, Enum, DateTime, Boolean
 from config.database import Base
 from sqlalchemy.orm import relationship
 from models.portfolio_datas import TagDatasPortfolio
@@ -16,6 +16,7 @@ class PortfolioDatasSchema(Base):
     value = Column(Numeric(18, 2), nullable=False)
     expiration_day = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
+    is_recurring = Column(Boolean, nullable=False, default=False)
 
     user = relationship('UserSchema')
 

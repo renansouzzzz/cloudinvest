@@ -19,6 +19,7 @@ class PortfolioDatas(BaseModel):
     tag: TagDatasPortfolio
     expiration_day: int | None
     installment: int | None
+    is_recurring: bool
 
 
 class PortfolioDatasGetAll(PortfolioDatas):
