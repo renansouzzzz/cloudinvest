@@ -42,23 +42,23 @@ def getByDate(idUser: int, month: str, year: int):
         end_date = datetime(year, int(monthStr[0]), int(monthStr[1]), 23, 59, 59, 9999)
 
         data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped). \
-                    join(PortfolioDatasMapped,
-                        and_(PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
-                            PortfolioDatasMapped.id_user == idUser)). \
-                    filter(
-                        and_(
-                            or_(
-                                PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date),
-                                PortfolioDatasInstallmentsMapped.is_recurring == True
-                            ),
-                            PortfolioDatasInstallmentsMapped.id_user == idUser,
-                            or_(
-                                PortfolioDatasMapped.is_recurring == True,
-                                PortfolioDatasInstallmentsMapped.is_recurring == True
-                            )
-                        )
-                    ). \
-                    all()
+            join(PortfolioDatasMapped,
+                 and_(PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
+                      PortfolioDatasMapped.id_user == idUser)). \
+            filter(
+                and_(
+                    or_(
+                        PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date),
+                        PortfolioDatasInstallmentsMapped.is_recurring == True
+                    ),
+                    PortfolioDatasInstallmentsMapped.id_user == idUser,
+                    or_(
+                        PortfolioDatasMapped.is_recurring == True,
+                        PortfolioDatasInstallmentsMapped.is_recurring == True
+                    )
+                )
+            ). \
+            all()
 
         if data is None:
             raise ValueError('Nenhum dado foi encontrado!')

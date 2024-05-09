@@ -130,9 +130,9 @@ def create(payload: PortfolioDatasMapped):
                     created_at=datetime.datetime.now(),
                     expiration_date=datetime.datetime.now(),
                     is_recurring=portfolio_datas.is_recurring
-                )
+                )                   
                 session.add(installment)
-                session.commit()
+                session.commit()            
                 return True
 
             installment_dates = []
