@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 
 from config.database import engine
@@ -11,7 +11,7 @@ from utils.parse_types import ParseToTypes
 
 class UnifiedData:
     def __init__(self, idPortData, idUser, name, tag, installment, value, expiration_day, created_at,
-                 current_installment, value_installment, expiration_date):
+                 current_installment, value_installment, expiration_date, is_recurring):
         self.idPortData = idPortData
         self.idUser = idUser
         self.name = name
@@ -23,6 +23,7 @@ class UnifiedData:
         self.current_installment = current_installment
         self.value_installment = value_installment
         self.expiration_date = expiration_date
+        self.is_recurring = is_recurring
 
 
 def getAll():
@@ -44,8 +45,19 @@ def getByDate(idUser: int, month: str, year: int):
             join(PortfolioDatasMapped,
                  and_(PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
                       PortfolioDatasMapped.id_user == idUser)). \
-            filter(PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date),
-                   PortfolioDatasInstallmentsMapped.id_user == idUser). \
+            filter(
+                and_(
+                    or_(
+                        PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date),
+                        PortfolioDatasInstallmentsMapped.is_recurring == True
+                    ),
+                    PortfolioDatasInstallmentsMapped.id_user == idUser,
+                    or_(
+                        PortfolioDatasMapped.is_recurring == True,
+                        PortfolioDatasInstallmentsMapped.is_recurring == True
+                    )
+                )
+            ). \
             all()
 
         if data is None:
@@ -65,7 +77,8 @@ def getByDate(idUser: int, month: str, year: int):
                 expiration_day=port_data.expiration_day,
                 value_installment=port_installment.value_installment,
                 value=port_data.value,
-                tag=port_data.tag
+                tag=port_data.tag,
+                is_recurring=port_data.is_recurring
             )
             unified_list.append(unified_datas)
 

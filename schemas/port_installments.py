@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, Numeric
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, Numeric, Boolean
 from config.database import Base
 from sqlalchemy.orm import relationship
 
@@ -14,6 +14,7 @@ class PortfolioDatasInstallmentsSchema(Base):
     value_installment = Column(Numeric(18, 2), nullable=False)
     created_at = Column(DateTime, default=datetime.now)
     expiration_date = Column(DateTime, nullable=True)
+    is_recurring = Column(Boolean, nullable=False, default=False)
 
     user = relationship('UserSchema')
 
