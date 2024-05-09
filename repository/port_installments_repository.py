@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, extract
 from sqlalchemy.orm import Session
 
 from config.database import engine
@@ -46,18 +46,16 @@ def getByDate(idUser: int, month: str, year: int):
                  and_(PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
                       PortfolioDatasMapped.id_user == idUser)). \
             filter(
+            or_(
                 and_(
-                    or_(
-                        PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date),
-                        PortfolioDatasInstallmentsMapped.is_recurring == True
-                    ),
-                    PortfolioDatasInstallmentsMapped.id_user == idUser,
-                    or_(
-                        PortfolioDatasMapped.is_recurring == True,
-                        PortfolioDatasInstallmentsMapped.is_recurring == True
-                    )
-                )
-            ). \
+                    PortfolioDatasMapped.is_recurring == True,
+                    extract('year', PortfolioDatasMapped.created_at) <= year,
+                    extract('month', PortfolioDatasMapped.created_at) <= int(monthStr[0])
+                ),
+                PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date)
+            ),
+            PortfolioDatasInstallmentsMapped.id_user == idUser
+        ). \
             all()
 
         if data is None:
@@ -78,7 +76,7 @@ def getByDate(idUser: int, month: str, year: int):
                 value_installment=port_installment.value_installment,
                 value=port_data.value,
                 tag=port_data.tag,
-                is_recurring=port_data.is_recurring
+                is_recurring=port_installment.is_recurring
             )
             unified_list.append(unified_datas)
 
