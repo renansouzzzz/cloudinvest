@@ -14,7 +14,7 @@ class PortfolioDatasInstallmentsSchema(Base):
     value_installment = Column(Numeric(18, 2), nullable=False)
     created_at = Column(DateTime, default=datetime.now)
     expiration_date = Column(DateTime, nullable=True)
-    is_recurring = Column(Boolean, nullable=False)
+    is_recurring = Column(Boolean, nullable=False, default=False)
 
     user = relationship('UserSchema')
 
