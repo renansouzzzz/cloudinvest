@@ -10,7 +10,7 @@ from models.token.token_data import TokenData
 
 from config.db.database import Base, engine
 from repository.portfolio import port_installments_repository, portfolio_datas_repository
-from repository.tacking import tracking_repository
+from repository.tracking import tracking_repository
 from repository.users import user_repository, user_adm_repository
 
 from fastapi import FastAPI
