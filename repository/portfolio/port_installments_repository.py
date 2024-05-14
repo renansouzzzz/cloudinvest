@@ -1,30 +1,15 @@
 from datetime import datetime
 
+from fastapi import HTTPException
 from sqlalchemy import and_, or_, extract
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from config.database import engine
-from schemas.port_installments import PortfolioDatasInstallmentsSchema, PortfolioDatasInstallmentsMapped
-from schemas.portfolio_datas import PortfolioDatasMapped
+from config.db.database import engine
+from models.portfolio.unified_data import UnifiedData
+from schemas.portfolio.port_installments import PortfolioDatasInstallmentsSchema, PortfolioDatasInstallmentsMapped
+from schemas.portfolio.portfolio_datas import PortfolioDatasMapped
 from utils.parse_types import ParseToTypes
-
-
-class UnifiedData:
-    def __init__(self, idPortData, idUser, name, tag, installment, value, expiration_day, created_at,
-                 current_installment, value_installment, expiration_date, is_recurring):
-        self.idPortData = idPortData
-        self.idUser = idUser
-        self.name = name
-        self.tag = tag
-        self.installment = installment
-        self.value = value
-        self.expiration_day = expiration_day
-        self.created_at = created_at
-        self.current_installment = current_installment
-        self.value_installment = value_installment
-        self.expiration_date = expiration_date
-        self.is_recurring = is_recurring
-
 
 def getAll():
     with Session(engine) as session:
@@ -44,6 +29,7 @@ def getByDate(idUser: int, month: str, year: int):
         data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped). \
             join(PortfolioDatasMapped,
                  and_(PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
+                      PortfolioDatasInstallmentsMapped.is_paid == False,
                       PortfolioDatasMapped.id_user == idUser)). \
             filter(
             or_(
@@ -81,3 +67,24 @@ def getByDate(idUser: int, month: str, year: int):
             unified_list.append(unified_datas)
 
         return unified_list
+
+
+def invoicePaid(idInstallment: int):
+    with Session(engine) as session:
+        try:
+            data = session.query(PortfolioDatasInstallmentsMapped).filter(
+                PortfolioDatasInstallmentsMapped.id == idInstallment).first()
+
+            if data is None:
+                raise ValueError('Nenhum dado foi encontrado!')
+
+            data.is_paid = True
+
+            session.commit()
+            session.refresh(data)
+
+        except IntegrityError as e:
+            session.rollback()
+            raise HTTPException(status_code=400, detail=f'Error on database: {e}')
+
+        return True

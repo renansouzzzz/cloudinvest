@@ -2,10 +2,10 @@ from MySQLdb import IntegrityError
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from models.user import UserCreate, UserUpdate, TypeProfileEnumDTO, UserUpdateTypeProfile
-from schemas.user import UserMapped, UserSchema
+from models.users.user import UserCreate, UserUpdate, TypeProfileEnumDTO, UserUpdateTypeProfile
+from schemas.users.user import UserMapped, UserSchema
 
-from config.database import engine
+from config.db.database import engine
 from cryptography.fernet import Fernet, InvalidToken
 
 from fastapi.security import OAuth2PasswordBearer

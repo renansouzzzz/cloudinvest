@@ -3,14 +3,15 @@ import uvicorn
 from fastapi import Depends, Cookie, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile
-from models.user_adm import UserAdmCreate, UserAdmUpdate
-from models.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
-from models.token_data import TokenData
+from models.users.user import UserCreate, UserUpdate, UserUpdateTypeProfile
+from models.users.user_adm import UserAdmCreate, UserAdmUpdate
+from models.portfolio.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
+from models.token.token_data import TokenData
 
-from config.database import Base, engine
-from repository import user_repository, user_adm_repository, portfolio_datas_repository, port_installments_repository, \
-    tracking_repository
+from config.db.database import Base, engine
+from repository.portfolio import port_installments_repository, portfolio_datas_repository
+from repository.tacking import tracking_repository
+from repository.users import user_repository, user_adm_repository
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -250,7 +251,7 @@ def update_portfolio_datas(idPortDatas: int, payload: PortfolioDatasUpdate, toke
 
 @app.get('/port-datas-installments/get-by-date/{idUser}', status_code=status.HTTP_202_ACCEPTED,
          tags=['Portfolio Datas Installments'])
-def get_by_date_portfolio_datas(idUser: int, month: str, year: int, token: str = Depends(oauth2_scheme)):
+def get_by_date_portfolio_datas_installment(idUser: int, month: str, year: int, token: str = Depends(oauth2_scheme)):
     try:
         return port_installments_repository.getByDate(idUser, month, year)
     except ValueError as e:
@@ -258,9 +259,18 @@ def get_by_date_portfolio_datas(idUser: int, month: str, year: int, token: str =
 
 
 @app.get('/portfolio-datas-installments', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas Installments'])
-def get_all_portfolio_datas(token: str = Depends(oauth2_scheme)):
+def get_all_portfolio_datas_installment(token: str = Depends(oauth2_scheme)):
     try:
         return port_installments_repository.getAll()
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
+
+@app.get('/port-datas-installments/paid-installment/{idInstallment}', status_code=status.HTTP_202_ACCEPTED,
+         tags=['Portfolio Datas Installments'])
+def paid_portfolio_datas_installment(idInstallment: int, token: str = Depends(oauth2_scheme)):
+    try:
+        return port_installments_repository.invoicePaid(idInstallment)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 

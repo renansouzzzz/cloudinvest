@@ -5,10 +5,10 @@ from fastapi import HTTPException, status
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
-from config.database import engine
-from models.portfolio_datas import PortfolioDatasUpdate, TagDatasPortfolio
-from schemas.port_installments import PortfolioDatasInstallmentsMapped
-from schemas.portfolio_datas import PortfolioDatasMapped
+from config.db.database import engine
+from models.portfolio.portfolio_datas import PortfolioDatasUpdate, TagDatasPortfolio
+from schemas.portfolio.port_installments import PortfolioDatasInstallmentsMapped
+from schemas.portfolio.portfolio_datas import PortfolioDatasMapped
 from utils.parse_types import ParseToTypes
 
 
@@ -107,8 +107,10 @@ def calculatePortfolioInvestimentTotals(idUser: int):
 def getById(id: int):
     with Session(engine) as session:
         data = session.get(PortfolioDatasMapped, id)
-        if data is None:
+
+        if not data:
             raise ValueError(f'O usuário com ID {id} não foi encontrado!')
+
         return data
 
 
@@ -129,7 +131,8 @@ def create(payload: PortfolioDatasMapped):
                     value_installment=portfolio_datas.value,
                     created_at=datetime.datetime.now(),
                     expiration_date=datetime.datetime.now(),
-                    is_recurring=portfolio_datas.is_recurring
+                    is_recurring=portfolio_datas.is_recurring,
+                    is_paid=None
                 )                   
                 session.add(installment)
                 session.commit()            
