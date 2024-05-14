@@ -250,7 +250,7 @@ def update_portfolio_datas(idPortDatas: int, payload: PortfolioDatasUpdate, toke
 
 @app.get('/port-datas-installments/get-by-date/{idUser}', status_code=status.HTTP_202_ACCEPTED,
          tags=['Portfolio Datas Installments'])
-def get_by_date_portfolio_datas(idUser: int, month: str, year: int, token: str = Depends(oauth2_scheme)):
+def get_by_date_portfolio_datas_installment(idUser: int, month: str, year: int, token: str = Depends(oauth2_scheme)):
     try:
         return port_installments_repository.getByDate(idUser, month, year)
     except ValueError as e:
@@ -258,9 +258,18 @@ def get_by_date_portfolio_datas(idUser: int, month: str, year: int, token: str =
 
 
 @app.get('/portfolio-datas-installments', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas Installments'])
-def get_all_portfolio_datas(token: str = Depends(oauth2_scheme)):
+def get_all_portfolio_datas_installment(token: str = Depends(oauth2_scheme)):
     try:
         return port_installments_repository.getAll()
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
+
+
+@app.get('/port-datas-installments/paid-installment/{idInstallment}', status_code=status.HTTP_202_ACCEPTED,
+         tags=['Portfolio Datas Installments'])
+def paid_portfolio_datas_installment(idInstallment: int, token: str = Depends(oauth2_scheme)):
+    try:
+        return port_installments_repository.invoicePaid(idInstallment)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 

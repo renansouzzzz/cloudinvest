@@ -6,7 +6,7 @@ from models.portfolio_datas import TagDatasPortfolio
 
 
 class PortfolioDatasSchema(Base):
-    __tablename__ = 'port_datas'
+    __tablename__: str = 'port_datas'
 
     id = Column(Integer, primary_key=True, index=True, nullable=False)
     id_user = Column(Integer, ForeignKey('user.id', onupdate='CASCADE'), nullable=False)
