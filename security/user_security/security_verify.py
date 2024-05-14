@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from repository import user_repository
+from repository.users import user_repository
 
 
 def authenticate_user(email, password):

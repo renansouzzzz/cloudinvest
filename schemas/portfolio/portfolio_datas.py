@@ -1,8 +1,8 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, Numeric, ForeignKey, String, Enum, DateTime, Boolean
-from config.database import Base
+from config.db.database import Base
 from sqlalchemy.orm import relationship
-from models.portfolio_datas import TagDatasPortfolio
+from models.portfolio.portfolio_datas import TagDatasPortfolio
 
 
 class PortfolioDatasSchema(Base):

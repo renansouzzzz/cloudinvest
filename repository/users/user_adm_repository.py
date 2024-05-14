@@ -2,11 +2,11 @@ from MySQLdb import IntegrityError
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from models.user_adm import UserAdmCreate, UserAdmUpdate
+from models.users.user_adm import UserAdmCreate, UserAdmUpdate
 
-from config.database import engine
+from config.db.database import engine
 
-from schemas.user_adm import UserAdmMapped, UserAdmSchema
+from schemas.users.user_adm import UserAdmMapped, UserAdmSchema
 
 
 def getAll():

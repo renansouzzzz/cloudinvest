@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from Tools.scripts.var_access_benchmark import C
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, Numeric, Boolean
-from config.database import Base
+from config.db.database import Base
 from sqlalchemy.orm import relationship
 
 
