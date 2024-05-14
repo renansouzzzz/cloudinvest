@@ -1,6 +1,8 @@
 from datetime import datetime
 
+from fastapi import HTTPException
 from sqlalchemy import and_, or_, extract
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from config.database import engine
@@ -44,6 +46,7 @@ def getByDate(idUser: int, month: str, year: int):
         data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped). \
             join(PortfolioDatasMapped,
                  and_(PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
+                      PortfolioDatasInstallmentsMapped.is_paid == False,
                       PortfolioDatasMapped.id_user == idUser)). \
             filter(
             or_(
@@ -81,3 +84,24 @@ def getByDate(idUser: int, month: str, year: int):
             unified_list.append(unified_datas)
 
         return unified_list
+
+
+def invoicePaid(idInstallment: int):
+    with Session(engine) as session:
+        try:
+            data = session.query(PortfolioDatasInstallmentsMapped).filter(
+                PortfolioDatasInstallmentsMapped.id == idInstallment).first()
+
+            if data is None:
+                raise ValueError('Nenhum dado foi encontrado!')
+
+            data.is_paid = True
+
+            session.commit()
+            session.refresh(data)
+
+        except IntegrityError as e:
+            session.rollback()
+            raise HTTPException(status_code=400, detail=f'Error on database: {e}')
+
+        return True

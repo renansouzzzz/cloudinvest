@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from Tools.scripts.var_access_benchmark import C
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, Numeric, Boolean
 from config.database import Base
 from sqlalchemy.orm import relationship
@@ -15,6 +17,7 @@ class PortfolioDatasInstallmentsSchema(Base):
     created_at = Column(DateTime, default=datetime.now)
     expiration_date = Column(DateTime, nullable=True)
     is_recurring = Column(Boolean, nullable=False, default=False)
+    is_paid = Column(Boolean, nullable=True, default=False)
 
     user = relationship('UserSchema')
 
