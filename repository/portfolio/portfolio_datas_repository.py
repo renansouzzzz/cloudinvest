@@ -5,10 +5,10 @@ from fastapi import HTTPException, status
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
-from config.database import engine
-from models.portfolio_datas import PortfolioDatasUpdate, TagDatasPortfolio
-from schemas.port_installments import PortfolioDatasInstallmentsMapped
-from schemas.portfolio_datas import PortfolioDatasMapped
+from config.db.database import engine
+from models.portfolio.portfolio_datas import PortfolioDatasUpdate, TagDatasPortfolio
+from schemas.portfolio.port_installments import PortfolioDatasInstallmentsMapped
+from schemas.portfolio.portfolio_datas import PortfolioDatasMapped
 from utils.parse_types import ParseToTypes
 
 

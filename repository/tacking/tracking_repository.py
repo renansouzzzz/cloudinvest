@@ -1,12 +1,12 @@
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
-from config.database import engine
-from models.portfolio_datas import TagDatasPortfolio
-from models.user import UserUpdateTypeProfile, TypeProfileEnumDTO
-from models.user_profile import Devedor, Intermediario, Investidor
-from repository.user_repository import updateTypeProfile
-from schemas.portfolio_datas import PortfolioDatasMapped
+from config.db.database import engine
+from models.portfolio.portfolio_datas import TagDatasPortfolio
+from models.users.user import UserUpdateTypeProfile, TypeProfileEnumDTO
+from models.users.user_profile import Devedor, Intermediario, Investidor
+from repository.users.user_repository import updateTypeProfile
+from schemas.portfolio.portfolio_datas import PortfolioDatasMapped
 
 
 def updateProfileByTracking(idUser: int):

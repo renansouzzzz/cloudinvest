@@ -3,14 +3,15 @@ import uvicorn
 from fastapi import Depends, Cookie, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from models.user import UserCreate, UserUpdate, UserUpdateTypeProfile
-from models.user_adm import UserAdmCreate, UserAdmUpdate
-from models.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
-from models.token_data import TokenData
+from models.users.user import UserCreate, UserUpdate, UserUpdateTypeProfile
+from models.users.user_adm import UserAdmCreate, UserAdmUpdate
+from models.portfolio.portfolio_datas import PortfolioDatasCreate, PortfolioDatasUpdate
+from models.token.token_data import TokenData
 
-from config.database import Base, engine
-from repository import user_repository, user_adm_repository, portfolio_datas_repository, port_installments_repository, \
-    tracking_repository
+from config.db.database import Base, engine
+from repository.portfolio import port_installments_repository, portfolio_datas_repository
+from repository.tacking import tracking_repository
+from repository.users import user_repository, user_adm_repository
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
