@@ -56,7 +56,7 @@ def calculatePortfolioBalance(idUser: int):
         ).all()
 
         if not dataRevenues and not dataExpenses:
-            raise ValueError(f'Nenhum dado foi encontrado!')
+            return []
 
         return sum(data.value for data in dataRevenues) - sum(data.value for data in dataExpenses)
 
@@ -71,7 +71,7 @@ def calculatePortfolioRevenuesTotals(idUser: int):
         ).all()
 
         if not dataRevenues:
-            raise ValueError(f'Nenhum dado foi encontrado!')
+            return []
 
         return sum(data.value for data in dataRevenues)
 
@@ -86,7 +86,8 @@ def calculatePortfolioExpensesTotals(idUser: int):
         ).all()
 
         if not dataExpenses:
-            raise ValueError(f'Nenhum dado foi encontrado!')
+            return []
+
         return 0 - sum(data.value for data in dataExpenses)
 
 
@@ -100,7 +101,8 @@ def calculatePortfolioInvestimentTotals(idUser: int):
         ).all()
 
         if not dataInvestiment:
-            raise ValueError(f'Nenhum dado foi encontrado!')
+            return []
+
         return sum(data.value for data in dataInvestiment)
 
 
