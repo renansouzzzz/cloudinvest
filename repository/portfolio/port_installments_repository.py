@@ -11,6 +11,7 @@ from schemas.portfolio.port_installments import PortfolioDatasInstallmentsSchema
 from schemas.portfolio.portfolio_datas import PortfolioDatasMapped
 from utils.parse_types import ParseToTypes
 
+
 def getAll():
     with Session(engine) as session:
         data = session.query(PortfolioDatasInstallmentsSchema).all()
