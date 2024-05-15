@@ -39,8 +39,9 @@ def getByDate(idUser: int, month: str, year: int):
         return data
 
 
-def calculatePortfolioBalance(idUser: int):
+def calculatePortfolioRevenuesAndExpensesAndInvestiment(idUser: int):
     with Session(engine) as session:
+
         dataRevenues = session.query(PortfolioDatasMapped).filter(
             and_(
                 PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas,
@@ -55,44 +56,6 @@ def calculatePortfolioBalance(idUser: int):
             )
         ).all()
 
-        if not dataRevenues and not dataExpenses:
-            return []
-
-        return sum(data.value for data in dataRevenues) - sum(data.value for data in dataExpenses)
-
-
-def calculatePortfolioRevenuesTotals(idUser: int):
-    with Session(engine) as session:
-        dataRevenues = session.query(PortfolioDatasMapped).filter(
-            and_(
-                PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas,
-                PortfolioDatasMapped.id_user == idUser
-            )
-        ).all()
-
-        if not dataRevenues:
-            return []
-
-        return sum(data.value for data in dataRevenues)
-
-
-def calculatePortfolioExpensesTotals(idUser: int):
-    with Session(engine) as session:
-        dataExpenses = session.query(PortfolioDatasMapped).filter(
-            and_(
-                PortfolioDatasMapped.tag == TagDatasPortfolio.Despesas,
-                PortfolioDatasMapped.id_user == idUser
-            )
-        ).all()
-
-        if not dataExpenses:
-            return []
-
-        return 0 - sum(data.value for data in dataExpenses)
-
-
-def calculatePortfolioInvestimentTotals(idUser: int):
-    with Session(engine) as session:
         dataInvestiment = session.query(PortfolioDatasMapped).filter(
             and_(
                 PortfolioDatasMapped.tag == TagDatasPortfolio.Investimentos,
@@ -100,10 +63,13 @@ def calculatePortfolioInvestimentTotals(idUser: int):
             )
         ).all()
 
-        if not dataInvestiment:
+        if not dataRevenues and not dataExpenses and not dataInvestiment:
             return []
 
-        return sum(data.value for data in dataInvestiment)
+        return {'total_balance': sum(data.value for data in dataRevenues) - sum(data.value for data in dataExpenses),
+                'total_revenues': sum(data.value for data in dataRevenues),
+                'total_expenses': sum(data.value for data in dataExpenses),
+                'total_investiments': sum(data.value for data in dataInvestiment)}
 
 
 def getById(id: int):
