@@ -2,11 +2,12 @@ import datetime
 
 from MySQLdb import IntegrityError
 from fastapi import HTTPException, status
-from sqlalchemy import and_
+from sqlalchemy import and_, extract, or_
 from sqlalchemy.orm import Session
 
 from config.db.database import engine
 from models.portfolio.portfolio_datas import PortfolioDatasUpdate, TagDatasPortfolio
+from models.portfolio.unified_all_portfolio_data import UnifiedAllPortfolioData
 from schemas.portfolio.port_installments import PortfolioDatasInstallmentsMapped
 from schemas.portfolio.portfolio_datas import PortfolioDatasMapped
 from utils.parse_types import ParseToTypes
@@ -37,73 +38,6 @@ def getByDate(idUser: int, month: str, year: int):
         if data is None:
             raise ValueError(f'Nenhum dado foi encontrado!')
         return data
-
-
-def calculatePortfolioBalance(idUser: int):
-    with Session(engine) as session:
-        dataRevenues = session.query(PortfolioDatasMapped).filter(
-            and_(
-                PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas,
-                PortfolioDatasMapped.id_user == idUser
-            )
-        ).all()
-
-        dataExpenses = session.query(PortfolioDatasMapped).filter(
-            and_(
-                PortfolioDatasMapped.tag == TagDatasPortfolio.Despesas,
-                PortfolioDatasMapped.id_user == idUser
-            )
-        ).all()
-
-        if not dataRevenues and not dataExpenses:
-            return []
-
-        return sum(data.value for data in dataRevenues) - sum(data.value for data in dataExpenses)
-
-
-def calculatePortfolioRevenuesTotals(idUser: int):
-    with Session(engine) as session:
-        dataRevenues = session.query(PortfolioDatasMapped).filter(
-            and_(
-                PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas,
-                PortfolioDatasMapped.id_user == idUser
-            )
-        ).all()
-
-        if not dataRevenues:
-            return []
-
-        return sum(data.value for data in dataRevenues)
-
-
-def calculatePortfolioExpensesTotals(idUser: int):
-    with Session(engine) as session:
-        dataExpenses = session.query(PortfolioDatasMapped).filter(
-            and_(
-                PortfolioDatasMapped.tag == TagDatasPortfolio.Despesas,
-                PortfolioDatasMapped.id_user == idUser
-            )
-        ).all()
-
-        if not dataExpenses:
-            return []
-
-        return 0 - sum(data.value for data in dataExpenses)
-
-
-def calculatePortfolioInvestimentTotals(idUser: int):
-    with Session(engine) as session:
-        dataInvestiment = session.query(PortfolioDatasMapped).filter(
-            and_(
-                PortfolioDatasMapped.tag == TagDatasPortfolio.Investimentos,
-                PortfolioDatasMapped.id_user == idUser
-            )
-        ).all()
-
-        if not dataInvestiment:
-            return []
-
-        return sum(data.value for data in dataInvestiment)
 
 
 def getById(id: int):
@@ -235,3 +169,39 @@ def delete(idPortDatas: int):
             raise HTTPException(status_code=400, detail=f'Error on database: {e}')
 
         return "Informação deletada com sucesso!"
+
+
+def calculatePortfolioRevenuesTotals(idUser):
+    with Session(engine) as session:
+
+        dataRevenues = session.query(PortfolioDatasMapped).filter(
+            and_(
+                PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas,
+                PortfolioDatasMapped.id_user == idUser
+            )
+        ).all()
+
+        dataExpenses = session.query(PortfolioDatasMapped).filter(
+            and_(
+                PortfolioDatasMapped.tag == TagDatasPortfolio.Despesas,
+                PortfolioDatasMapped.id_user == idUser
+            )
+        ).all()
+
+        dataInvestiment = session.query(PortfolioDatasMapped).filter(
+            and_(
+                PortfolioDatasMapped.tag == TagDatasPortfolio.Investimentos,
+                PortfolioDatasMapped.id_user == idUser
+            )
+        ).all()
+
+        if not dataRevenues and not dataExpenses and not dataInvestiment:
+            return {'total_balance': 0,
+                    'total_revenues': 0,
+                    'total_expenses': 0,
+                    'total_investiments': 0}
+
+        return {'total_balance': sum(data.value for data in dataRevenues) - sum(data.value for data in dataExpenses),
+                'total_revenues': sum(data.value for data in dataRevenues),
+                'total_expenses': sum(data.value for data in dataExpenses),
+                'total_investiments': sum(data.value for data in dataInvestiment)}
