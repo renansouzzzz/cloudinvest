@@ -64,7 +64,10 @@ def calculatePortfolioRevenuesAndExpensesAndInvestiment(idUser: int):
         ).all()
 
         if not dataRevenues and not dataExpenses and not dataInvestiment:
-            return []
+            return {'total_balance': 0,
+                    'total_revenues': 0,
+                    'total_expenses': 0,
+                    'total_investiments': 0}
 
         return {'total_balance': sum(data.value for data in dataRevenues) - sum(data.value for data in dataExpenses),
                 'total_revenues': sum(data.value for data in dataRevenues),
