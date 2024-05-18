@@ -205,3 +205,4 @@ def calculatePortfolioRevenuesTotals(idUser):
                 'total_revenues': sum(data.value for data in dataRevenues),
                 'total_expenses': sum(data.value for data in dataExpenses),
                 'total_investiments': sum(data.value for data in dataInvestiment)}
+    
