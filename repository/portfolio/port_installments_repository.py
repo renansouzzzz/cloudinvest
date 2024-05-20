@@ -141,6 +141,4 @@ def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
             elif data.tag == TagDatasPortfolio.Despesas:
                 total_expenses += data.value_installment
 
-        balance = total_revenue - total_expenses
-
-        return balance
+        return total_revenue - total_expenses
