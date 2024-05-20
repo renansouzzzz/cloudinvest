@@ -183,7 +183,7 @@ def get_portfolio_datas(idPortDatas: int, token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
-@app.get('/portfolio-datas/calculate/balance-installments/{idUser}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
+@app.get('/portfolio-datas/calculate/total-all/{idUser}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas'])
 def calculate_balance_installments(idUser: int, token: str = Depends(oauth2_scheme)):
     try:
         return portfolio_datas_repository.calculatePortfolioRevenuesTotals(idUser)
