@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
@@ -32,15 +34,15 @@ def updateProfileByTracking(idUser: int):
             )
         ).all()
 
-        totalsInvestement = sum(data.value for data in dataInvestiment)
+        totalsInvestiment = Decimal(sum(data.value for data in dataInvestiment))
 
-        totalsRevenues = sum(data.value for data in dataRevenues)
+        totalsRevenues = Decimal(sum(data.value for data in dataRevenues))
 
-        totalsExpenses = sum(data.value for data in dataExpenses)
+        totalsExpenses = Decimal(sum(data.value for data in dataExpenses))
 
-        profiles = [Devedor(totalsRevenues, totalsExpenses, totalsInvestement),
-                    Intermediario(totalsRevenues, totalsExpenses, totalsInvestement),
-                    Investidor(totalsRevenues, totalsExpenses, totalsInvestement)]
+        profiles = [Devedor(totalsRevenues, totalsExpenses, totalsInvestiment),
+                    Intermediario(totalsRevenues, totalsExpenses, totalsInvestiment),
+                    Investidor(totalsRevenues, totalsExpenses, totalsInvestiment)]
 
         profile_mappings = {
             Devedor: TypeProfileEnumDTO.Devedor,
@@ -51,7 +53,9 @@ def updateProfileByTracking(idUser: int):
         for profile in profiles:
             if profile.check_profile():
                 user_type_profile = UserUpdateTypeProfile(type_profile=profile_mappings[type(profile)])
-                updateTypeProfile(idUser, user_type_profile)
+                update_return = updateTypeProfile(idUser, user_type_profile)
+            else:
+                update_return = (False, "Usuário já se encontra no mesmo perfil financeiro!")
 
-        return True
+        return update_return
 
