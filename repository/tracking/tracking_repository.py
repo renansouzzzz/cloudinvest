@@ -9,6 +9,7 @@ from models.users.user import UserUpdateTypeProfile, TypeProfileEnumDTO
 from models.users.user_profile import Devedor, Intermediario, Investidor
 from repository.users.user_repository import updateTypeProfile
 from schemas.portfolio.portfolio_datas import PortfolioDatasMapped
+from schemas.users.user import UserMapped
 
 
 def updateProfileByTracking(idUser: int):
@@ -34,6 +35,8 @@ def updateProfileByTracking(idUser: int):
             )
         ).all()
 
+        typeProfileUser = session.query(UserMapped).filter(UserMapped.id == idUser).one_or_none()
+
         totalsInvestiment = Decimal(sum(data.value for data in dataInvestiment))
 
         totalsRevenues = Decimal(sum(data.value for data in dataRevenues))
@@ -53,9 +56,9 @@ def updateProfileByTracking(idUser: int):
         for profile in profiles:
             if profile.check_profile():
                 user_type_profile = UserUpdateTypeProfile(type_profile=profile_mappings[type(profile)])
-                update_return = updateTypeProfile(idUser, user_type_profile)
+                return updateTypeProfile(idUser, user_type_profile)
             else:
-                update_return = (False, "Usuário já se encontra no mesmo perfil financeiro!")
+                update_return = (False, typeProfileUser.type_profile)
 
         return update_return
 
