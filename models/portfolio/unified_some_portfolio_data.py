@@ -4,3 +4,4 @@ class UnifiedSomePortfolioData:
         self.value_installment = value_installment
         self.value = value
         self.is_recurring = is_recurring
+
