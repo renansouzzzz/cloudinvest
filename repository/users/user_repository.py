@@ -104,6 +104,9 @@ def updateTypeProfile(id: int, user: UserUpdateTypeProfile):
             if user.type_profile not in TypeProfileEnumDTO:
                 raise HTTPException(status_code=404, detail="Tipo de perfil não existente!")
 
+            if user.type_profile == getUserById.type_profile:
+                return False, user.type_profile
+
             getUserById.type_profile = user.type_profile
             session.commit()
             session.refresh(getUserById)
@@ -112,7 +115,7 @@ def updateTypeProfile(id: int, user: UserUpdateTypeProfile):
             session.rollback()
             raise HTTPException(status_code=400, detail=f'Error on database: {e}')
 
-        return "Perfil de usuário atualizado com sucesso!"
+        return True, user.type_profile
 
     """
     _delete apenas desativa o campo ACTIVE_

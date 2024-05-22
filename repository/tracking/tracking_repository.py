@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
@@ -7,6 +9,7 @@ from models.users.user import UserUpdateTypeProfile, TypeProfileEnumDTO
 from models.users.user_profile import Devedor, Intermediario, Investidor
 from repository.users.user_repository import updateTypeProfile
 from schemas.portfolio.portfolio_datas import PortfolioDatasMapped
+from schemas.users.user import UserMapped
 
 
 def updateProfileByTracking(idUser: int):
@@ -32,15 +35,17 @@ def updateProfileByTracking(idUser: int):
             )
         ).all()
 
-        totalsInvestement = sum(data.value for data in dataInvestiment)
+        typeProfileUser = session.query(UserMapped).filter(UserMapped.id == idUser).one_or_none()
 
-        totalsRevenues = sum(data.value for data in dataRevenues)
+        totalsInvestiment = Decimal(sum(data.value for data in dataInvestiment))
 
-        totalsExpenses = sum(data.value for data in dataExpenses)
+        totalsRevenues = Decimal(sum(data.value for data in dataRevenues))
 
-        profiles = [Devedor(totalsRevenues, totalsExpenses, totalsInvestement),
-                    Intermediario(totalsRevenues, totalsExpenses, totalsInvestement),
-                    Investidor(totalsRevenues, totalsExpenses, totalsInvestement)]
+        totalsExpenses = Decimal(sum(data.value for data in dataExpenses))
+
+        profiles = [Devedor(totalsRevenues, totalsExpenses, totalsInvestiment),
+                    Intermediario(totalsRevenues, totalsExpenses, totalsInvestiment),
+                    Investidor(totalsRevenues, totalsExpenses, totalsInvestiment)]
 
         profile_mappings = {
             Devedor: TypeProfileEnumDTO.Devedor,
@@ -51,7 +56,9 @@ def updateProfileByTracking(idUser: int):
         for profile in profiles:
             if profile.check_profile():
                 user_type_profile = UserUpdateTypeProfile(type_profile=profile_mappings[type(profile)])
-                updateTypeProfile(idUser, user_type_profile)
+                return updateTypeProfile(idUser, user_type_profile)
+            else:
+                update_return = (False, typeProfileUser.type_profile)
 
-        return True
+        return update_return
 
