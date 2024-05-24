@@ -13,12 +13,16 @@ class UserProfile:
 
 class Devedor(UserProfile):
     def check_profile(self):
-        return Decimal(self.totals_revenues) - Decimal(self.totals_expenses) < Decimal(self.totals_revenues)  # and Decimal(self.totals_investment) < Decimal('0.05') * self.totals_revenues
+        if self.totals_investment == 0:
+            return Decimal(self.totals_revenues) - Decimal(self.totals_expenses) <= Decimal(self.totals_revenues)
+        return Decimal(self.totals_revenues) - Decimal(self.totals_expenses) <= Decimal(self.totals_revenues) and Decimal(self.totals_investment) < Decimal('0.2') * self.totals_revenues
 
 
 class Intermediario(UserProfile):
     def check_profile(self):
-        return Decimal(self.totals_revenues) > Decimal('0.5') * Decimal(self.totals_expenses)  # and Decimal(self.totals_investment) < Decimal('0.3') * Decimal(self.totals_revenues)
+        if self.totals_investment == 0:
+            return Decimal(self.totals_revenues) >= Decimal('0.5') * Decimal(self.totals_expenses)
+        return Decimal(self.totals_revenues) >= Decimal('0.5') * Decimal(self.totals_expenses) and Decimal(self.totals_investment) < Decimal('0.3') * Decimal(self.totals_revenues)
 
 
 class Investidor(UserProfile):
