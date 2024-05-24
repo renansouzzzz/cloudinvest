@@ -261,7 +261,7 @@ def calculate_portfolio_balance(idUser: int, month: str, year: int, token: str =
 # --------------- TRACKING
 
 @app.get('/tracking/{idUser}', status_code=status.HTTP_202_ACCEPTED, tags=['Tracking'])
-def put_tracking_user(idUser: int, token: str = Depends(oauth2_scheme)):
+def tracking_user_percent_and_put_profile(idUser: int, token: str = Depends(oauth2_scheme)):
     try:
         return tracking_repository.updateProfileByTracking(idUser)
     except ValueError as e:
