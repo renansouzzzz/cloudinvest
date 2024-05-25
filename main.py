@@ -1,3 +1,6 @@
+from typing import Callable
+from urllib.request import Request
+
 import uvicorn
 
 from fastapi import Depends, Cookie, HTTPException, Response, status
@@ -19,6 +22,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from security.token.token_verify import Token
 
 from security.user_security.security_verify import authenticate_user
+
+revoked_tokens = set()
 
 origins = [
     "*",
@@ -70,10 +75,24 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return TokenData(access_token=access_token, user=userData)
 
 
-@app.get("/logout", tags=['Logout'])
-async def logout(response: Response, token: str = Cookie(None)):
-    response.delete_cookie("token")
-    return {"message": "Logout realizado com sucesso!"}
+@app.post("/logout")
+async def logout(token: str = Depends(oauth2_scheme)):
+    revoked_tokens.add(token)
+    return {"msg": "Logout successful"}
+
+
+@app.middleware("http")
+async def check_revoked_tokens(request: Request, call_next: Callable):
+    if "authorization" in request.headers:
+        auth_header = request.headers["authorization"]
+        token = auth_header.split(" ")[1]
+        if token in revoked_tokens:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token has been revoked",
+            )
+    response = await call_next(request)
+    return response
 
 
 @app.get("/users", tags=['User'])
@@ -193,7 +212,7 @@ def calculate_balance_installments(idUser: int, token: str = Depends(oauth2_sche
 
 @app.post('/portfolio-datas/create', status_code=status.HTTP_201_CREATED, tags=['Portfolio Datas'])
 def create_portfolio_datas(payload: PortfolioDatasCreate, token: str = Depends(oauth2_scheme)):
-    try:        
+    try:
         return portfolio_datas_repository.create(payload)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
@@ -242,7 +261,8 @@ def get_all_portfolio_datas_installment(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
-@app.get('/port-datas-installments/paid-installment/{idInstallment}', status_code=status.HTTP_202_ACCEPTED, tags=['Portfolio Datas Installments'])
+@app.get('/port-datas-installments/paid-installment/{idInstallment}', status_code=status.HTTP_202_ACCEPTED,
+         tags=['Portfolio Datas Installments'])
 def paid_portfolio_datas_installment(idInstallment: int, token: str = Depends(oauth2_scheme)):
     try:
         return port_installments_repository.invoicePaid(idInstallment)
@@ -250,7 +270,8 @@ def paid_portfolio_datas_installment(idInstallment: int, token: str = Depends(oa
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{e}')
 
 
-@app.get('/port-datas-installments/calculate/balance-installments/{idUser}', status_code=status.HTTP_200_OK, tags=['Portfolio Datas Installments'])
+@app.get('/port-datas-installments/calculate/balance-installments/{idUser}', status_code=status.HTTP_200_OK,
+         tags=['Portfolio Datas Installments'])
 def calculate_portfolio_balance(idUser: int, month: str, year: int, token: str = Depends(oauth2_scheme)):
     try:
         return port_installments_repository.calculatePortfolioBalanceInstallments(idUser, month, year)
