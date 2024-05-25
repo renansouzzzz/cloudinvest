@@ -98,7 +98,7 @@ def calculateTrackingPercentages(totalsRevenues, totalsExpenses, totalsInvestime
 
     tracking["porcent"].append({
         "id": 1,
-        "title": "50% de sua receita sobre as despesas",
+        "title": "50% da receita sobre as despesas",
         "porcent": int(reached_goal_1)
     })
     tracking["porcent"].append({
