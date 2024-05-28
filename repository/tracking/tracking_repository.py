@@ -59,7 +59,8 @@ def updateProfileByTracking(idUser: int):
         for profile in profiles:
             if profile.check_profile():
                 new_profile = profile_mappings[type(profile)]
-                break
+                if new_profile != current_profile:
+                    break
 
         change_profile = new_profile != current_profile
 
