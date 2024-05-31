@@ -86,15 +86,13 @@ def calculateTrackingPercentages(totalsRevenues, totalsExpenses, totalsInvestime
     }
 
     if userProfile == TypeProfileEnumDTO.Devedor:
-        half_expenses = Decimal('0.5') * totalsExpenses
-        if totalsExpenses > 0:
-            reached_goal_1 = min(totalsRevenues / half_expenses, Decimal('1.0')) * 100
-        else:
-            reached_goal_1 = 100
+        half_revenues = Decimal('0.5') * totalsRevenues
+        if totalsRevenues > 0:
+            reached_goal_1 = min(totalsExpenses / half_revenues, Decimal('1.0')) * 100
 
         tracking["porcent"].append({
             "id": 1,
-            "title": "50% da receita sobre as despesas",
+            "title": "50% das receitas sobre as despesas",
             "porcent": int(reached_goal_1)
         })
 
@@ -115,7 +113,7 @@ def calculateTrackingPercentages(totalsRevenues, totalsExpenses, totalsInvestime
 
         tracking["porcent"].append({
             "id": 1,
-            "title": "50% da receita sobre as despesas",
+            "title": "50% das receitas sobre as despesas",
             "porcent": int(reached_goal_1)
         })
 
@@ -142,7 +140,7 @@ def calculateTrackingPercentages(totalsRevenues, totalsExpenses, totalsInvestime
 
         tracking["porcent"].append({
             "id": 1,
-            "title": "50% da receita sobre as despesas",
+            "title": "50% das receitas sobre as despesas",
             "porcent": int(reached_goal_1)
         })
 
