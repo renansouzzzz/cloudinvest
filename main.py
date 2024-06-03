@@ -75,7 +75,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return TokenData(access_token=access_token, user=userData)
 
 
-@app.post("/logout")
+@app.post("/logout", tags=['Logout'])
 async def logout(token: str = Depends(oauth2_scheme)):
     revoked_tokens.add(token)
     return {"msg": "Logout successful"}
