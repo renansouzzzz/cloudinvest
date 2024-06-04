@@ -2,12 +2,11 @@ import datetime
 
 from MySQLdb import IntegrityError
 from fastapi import HTTPException, status
-from sqlalchemy import and_, extract, or_
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from config.db.database import engine
 from models.portfolio.portfolio_datas import PortfolioDatasUpdate, TagDatasPortfolio
-from models.portfolio.unified_all_portfolio_data import UnifiedAllPortfolioData
 from schemas.portfolio.port_installments import PortfolioDatasInstallmentsMapped
 from schemas.portfolio.portfolio_datas import PortfolioDatasMapped
 from utils.parse_types import ParseToTypes
@@ -93,16 +92,30 @@ def create(payload: PortfolioDatasMapped):
 
             installments = []
             for i, date in enumerate(installment_dates):
-                installment = PortfolioDatasInstallmentsMapped(
-                    id_user=portfolio_datas.id_user,
-                    id_port_datas=portfolio_datas.id,
-                    current_installment=i + 1,
-                    value_installment=portfolio_datas.value / portfolio_datas.installment,
-                    created_at=datetime.datetime.now(),
-                    expiration_date=date,
-                    is_recurring=portfolio_datas.is_recurring
-                )
-                installments.append(installment)
+                if portfolio_datas.tag in [TagDatasPortfolio.Receitas, TagDatasPortfolio.Investimentos]:
+                    installment = PortfolioDatasInstallmentsMapped(
+                        id_user=portfolio_datas.id_user,
+                        id_port_datas=portfolio_datas.id,
+                        current_installment=i + 1,
+                        value_installment=portfolio_datas.value / portfolio_datas.installment,
+                        created_at=datetime.now(),
+                        expiration_date=date,
+                        is_recurring=portfolio_datas.is_recurring,
+                        is_paid=None
+                    )
+                    installments.append(installment)
+
+                else:
+                    installment = PortfolioDatasInstallmentsMapped(
+                        id_user=portfolio_datas.id_user,
+                        id_port_datas=portfolio_datas.id,
+                        current_installment=i + 1,
+                        value_installment=portfolio_datas.value / portfolio_datas.installment,
+                        created_at=datetime.datetime.now(),
+                        expiration_date=date,
+                        is_recurring=portfolio_datas.is_recurring
+                    )
+                    installments.append(installment)
 
             session.bulk_save_objects(installments)
             session.commit()
