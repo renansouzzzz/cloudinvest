@@ -53,7 +53,7 @@ def create(payload: PortfolioDatasMapped):
     with Session(engine) as session:
         try:
             portfolio_datas = PortfolioDatasMapped(**payload.dict())
-        
+
             session.add(portfolio_datas)
             session.commit()
             session.refresh(portfolio_datas)
@@ -68,9 +68,9 @@ def create(payload: PortfolioDatasMapped):
                     expiration_date=datetime.datetime.now(),
                     is_recurring=portfolio_datas.is_recurring,
                     is_paid=None
-                )                   
+                )
                 session.add(installment)
-                session.commit()            
+                session.commit()
                 return True
 
             installment_dates = []
@@ -92,30 +92,16 @@ def create(payload: PortfolioDatasMapped):
 
             installments = []
             for i, date in enumerate(installment_dates):
-                if portfolio_datas.tag in [TagDatasPortfolio.Receitas, TagDatasPortfolio.Investimentos]:
-                    installment = PortfolioDatasInstallmentsMapped(
-                        id_user=portfolio_datas.id_user,
-                        id_port_datas=portfolio_datas.id,
-                        current_installment=i + 1,
-                        value_installment=portfolio_datas.value / portfolio_datas.installment,
-                        created_at=datetime.now(),
-                        expiration_date=date,
-                        is_recurring=portfolio_datas.is_recurring,
-                        is_paid=None
-                    )
-                    installments.append(installment)
-
-                else:
-                    installment = PortfolioDatasInstallmentsMapped(
-                        id_user=portfolio_datas.id_user,
-                        id_port_datas=portfolio_datas.id,
-                        current_installment=i + 1,
-                        value_installment=portfolio_datas.value / portfolio_datas.installment,
-                        created_at=datetime.datetime.now(),
-                        expiration_date=date,
-                        is_recurring=portfolio_datas.is_recurring
-                    )
-                    installments.append(installment)
+                installment = PortfolioDatasInstallmentsMapped(
+                    id_user=portfolio_datas.id_user,
+                    id_port_datas=portfolio_datas.id,
+                    current_installment=i + 1,
+                    value_installment=portfolio_datas.value / portfolio_datas.installment,
+                    created_at=datetime.datetime.now(),
+                    expiration_date=date,
+                    is_recurring=portfolio_datas.is_recurring
+                )
+                installments.append(installment)
 
             session.bulk_save_objects(installments)
             session.commit()
