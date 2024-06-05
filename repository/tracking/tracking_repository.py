@@ -54,6 +54,7 @@ def updateProfileByTracking(idUser: int):
         }
 
         current_profile = typeProfileUser.type_profile
+        new_profile = current_profile
 
         for profile in profiles:
             if profile.check_profile():
