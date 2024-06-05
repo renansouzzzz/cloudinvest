@@ -82,10 +82,7 @@ def invoicePaid(idInstallment: int):
             if data is None:
                 raise ValueError('Nenhum dado foi encontrado!')
 
-            if data.is_paid is True:
-                data.is_paid = False
-            else:
-                data.is_paid = True
+            data.is_paid = not data.is_paid
 
             session.commit()
             session.refresh(data)
