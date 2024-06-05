@@ -14,7 +14,6 @@ from schemas.portfolio.portfolio_datas import PortfolioDatasMapped
 from utils.parse_types import ParseToTypes
 
 
-
 def getAll():
     with Session(engine) as session:
         data = session.query(PortfolioDatasInstallmentsSchema).all()
@@ -33,7 +32,7 @@ def getByDate(idUser: int, month: str, year: int):
         data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped). \
             join(PortfolioDatasMapped,
                  and_(PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
-                      PortfolioDatasInstallmentsMapped.is_paid == False,
+                      #PortfolioDatasInstallmentsMapped.is_paid == False,
                       PortfolioDatasMapped.id_user == idUser)). \
             filter(
             or_(
