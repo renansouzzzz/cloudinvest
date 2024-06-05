@@ -32,7 +32,7 @@ def getByDate(idUser: int, month: str, year: int):
         data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped). \
             join(PortfolioDatasMapped,
                  and_(PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
-                      #PortfolioDatasInstallmentsMapped.is_paid == False,
+                      # PortfolioDatasInstallmentsMapped.is_paid == False,
                       PortfolioDatasMapped.id_user == idUser)). \
             filter(
             or_(
