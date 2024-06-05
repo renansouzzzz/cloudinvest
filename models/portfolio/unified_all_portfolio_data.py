@@ -1,6 +1,7 @@
 class UnifiedAllPortfolioData:
-    def __init__(self, idPortData, idUser, name, tag, installment, value, expiration_day, created_at,
+    def __init__(self, id, idPortData, idUser, name, tag, installment, value, expiration_day, created_at,
                  current_installment, value_installment, expiration_date, is_recurring):
+        self.id = id
         self.idPortData = idPortData
         self.idUser = idUser
         self.name = name

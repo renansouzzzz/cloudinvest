@@ -55,6 +55,7 @@ def getByDate(idUser: int, month: str, year: int):
 
         for port_installment, port_data in data:
             unified_datas = UnifiedAllPortfolioData(
+                id=port_installment.id,
                 idPortData=port_data.id,
                 name=port_data.name,
                 installment=port_data.installment,
@@ -82,7 +83,10 @@ def invoicePaid(idInstallment: int):
             if data is None:
                 raise ValueError('Nenhum dado foi encontrado!')
 
-            data.is_paid = True
+            if data.is_paid is True:
+                data.is_paid = False
+            else:
+                data.is_paid = True
 
             session.commit()
             session.refresh(data)
@@ -91,7 +95,7 @@ def invoicePaid(idInstallment: int):
             session.rollback()
             raise HTTPException(status_code=400, detail=f'Error on database: {e}')
 
-        return True
+        return data.is_paid
 
 
 def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
