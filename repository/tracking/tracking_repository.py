@@ -86,7 +86,7 @@ def calculateTrackingPercentages(totalsRevenues, totalsExpenses, totalsInvestime
     }
 
     if userProfile == TypeProfileEnumDTO.Devedor:
-        revenue_expense_difference = Decimal(totals_revenues) - Decimal(totals_expenses)
+        revenue_expense_difference = Decimal(totalsRevenues) - Decimal(totalsExpenses)
         half_revenues = Decimal('0.5') * totalsRevenues
 
         reached_goal_1 = min(revenue_expense_difference / half_revenues, Decimal('1.0')) * 100 if totalsRevenues > 0 else 0
