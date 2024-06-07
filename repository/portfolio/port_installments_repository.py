@@ -66,7 +66,8 @@ def getByDate(idUser: int, month: str, year: int):
                 value_installment=port_installment.value_installment,
                 value=port_data.value,
                 tag=port_data.tag,
-                is_recurring=port_installment.is_recurring
+                is_recurring=port_installment.is_recurring,
+                is_paid=port_installment.is_paid
             )
             unified_list.append(unified_datas)
 
