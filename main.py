@@ -46,6 +46,7 @@ Base.metadata.create_all(engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
+
 @app.get("/", tags=['Health check'])
 async def read_root():
     return {"message": "API EXECUTADA COM SUCESSO!"}
