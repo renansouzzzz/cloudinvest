@@ -66,7 +66,8 @@ def getByDate(idUser: int, month: str, year: int):
                 value_installment=port_installment.value_installment,
                 value=port_data.value,
                 tag=port_data.tag,
-                is_recurring=port_installment.is_recurring
+                is_recurring=port_installment.is_recurring,
+                is_paid=port_installment.is_paid
             )
             unified_list.append(unified_datas)
 
@@ -95,7 +96,7 @@ def invoicePaid(idInstallment: int):
 
 
 def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
-    with Session(engine) as session:
+    with (Session(engine) as session):
 
         total_revenue = 0
         total_expenses = 0
@@ -107,9 +108,11 @@ def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
 
         data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped). \
             join(PortfolioDatasMapped,
-                 and_(PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
-                      PortfolioDatasInstallmentsMapped.is_paid == False,
-                      PortfolioDatasMapped.id_user == idUser)). \
+                 and_(
+                     PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
+                     PortfolioDatasMapped.id_user == idUser
+                 )
+                 ). \
             filter(
             or_(
                 and_(
@@ -118,6 +121,10 @@ def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
                     extract('month', PortfolioDatasMapped.created_at) <= int(monthStr[0])
                 ),
                 PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date)
+            ),
+            or_(
+                PortfolioDatasInstallmentsMapped.is_paid == False,
+                PortfolioDatasInstallmentsMapped.is_paid == None
             ),
             PortfolioDatasInstallmentsMapped.id_user == idUser
         ). \

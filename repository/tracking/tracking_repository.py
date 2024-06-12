@@ -79,91 +79,91 @@ def updateProfileByTracking(idUser: int):
         return response_body
 
 
-def calculateTrackingPercentages(totalsRevenues, totalsExpenses, totalsInvestiment, userProfile):
+def calculateTrackingPercentages(totalsRevenues, totalsExpenses, totalsInvestiment, currentProfile):
     tracking = {
         "total_porcent": 0,
         "porcent": []
     }
 
-    if userProfile == TypeProfileEnumDTO.Devedor:
-        half_revenues = Decimal('0.5') * totalsRevenues
-        if totalsRevenues > 0:
-            reached_goal_1 = min(totalsExpenses / half_revenues, Decimal('1.0')) * 100
-        else:
-            reached_goal_1 = 100
+    if currentProfile == TypeProfileEnumDTO.Devedor:
+        next_profile = TypeProfileEnumDTO.Intermediario
 
-        twenty_percent_revenues = Decimal('0.2') * totalsRevenues
-        if totalsRevenues > 0:
-            reached_goal_2 = min(totalsInvestiment / twenty_percent_revenues, Decimal('1.0')) * 100
-        else:
-            reached_goal_2 = 0
+        goal_1 = Decimal('0.2') * totalsExpenses
+        goal_2 = Decimal('0.4') * totalsRevenues
+        goal_3 = Decimal('0.2') * totalsRevenues
+        goal_4 = totalsExpenses
+
+        reached_goal_1 = min(totalsRevenues / goal_1, Decimal('1.0')) * 100 if totalsExpenses > 0 else 0
+        reached_goal_2 = min(goal_2 / totalsExpenses, Decimal('1.0')) * 100 if totalsRevenues > 0 else 0
+        reached_goal_3 = min(totalsInvestiment / goal_3, Decimal('1.0')) * 100 if totalsRevenues > 0 else 0
+        reached_goal_4 = 100 if totalsRevenues >= goal_4 else 0
 
         tracking["porcent"].append({
             "id": 1,
-            "title": "50% das receitas sobre as despesas",
+            "title": "Receitas >= 20% das despesas",
             "porcent": int(reached_goal_1)
         })
 
         tracking["porcent"].append({
             "id": 2,
-            "title": "20% de sua receita investida",
+            "title": "Despesas < 40% das receitas",
             "porcent": int(reached_goal_2)
         })
 
-        tracking["total_porcent"] = int(reached_goal_1)
+        tracking["porcent"].append({
+            "id": 3,
+            "title": "Investimento > 20% das receitas",
+            "porcent": int(reached_goal_3)
+        })
 
-    elif userProfile == TypeProfileEnumDTO.Intermediario:
-        half_expenses = Decimal('0.5') * totalsExpenses
-        if totalsExpenses > 0:
-            reached_goal_1 = min(totalsRevenues / half_expenses, Decimal('1.0')) * 100
-        else:
-            reached_goal_1 = 100
+        tracking["porcent"].append({
+            "id": 4,
+            "title": "Receitas >= Despesas",
+            "porcent": int(reached_goal_4)
+        })
 
-        thirty_percent_revenues = Decimal('0.3') * totalsRevenues
-        if totalsRevenues > 0:
-            reached_goal_2 = min(totalsInvestiment / thirty_percent_revenues, Decimal('1.0')) * 100
-        else:
-            reached_goal_2 = 0
+        tracking["total_porcent"] = int((reached_goal_1 + reached_goal_2 + reached_goal_3 + reached_goal_4) / 4)
+
+    elif currentProfile == TypeProfileEnumDTO.Intermediario:
+        next_profile = TypeProfileEnumDTO.Investidor
+
+        goal_1 = Decimal('0.6') * totalsRevenues
+        goal_2 = Decimal('0.7') * totalsExpenses
+        goal_3 = totalsExpenses
+
+        reached_goal_1 = min(totalsInvestiment / goal_1, Decimal('1.0')) * 100 if totalsRevenues > 0 else 0
+        reached_goal_2 = min(totalsRevenues / goal_2, Decimal('1.0')) * 100 if totalsExpenses > 0 else 0
+        reached_goal_3 = 100 if totalsRevenues > goal_3 else 0
 
         tracking["porcent"].append({
             "id": 1,
-            "title": "50% das receitas sobre as despesas",
+            "title": "Investimento >= 60% das receitas",
             "porcent": int(reached_goal_1)
         })
 
         tracking["porcent"].append({
             "id": 2,
-            "title": "30% de sua receita investida",
+            "title": "Receitas > 70% das despesas",
             "porcent": int(reached_goal_2)
         })
 
-        tracking["total_porcent"] = int((reached_goal_1 + reached_goal_2) / 2)
+        tracking["porcent"].append({
+            "id": 3,
+            "title": "Receitas > Despesas",
+            "porcent": int(reached_goal_3)
+        })
 
-    elif userProfile == TypeProfileEnumDTO.Investidor:
-        half_expenses = Decimal('0.5') * totalsExpenses
-        if totalsExpenses > 0:
-            reached_goal_1 = min(totalsRevenues / half_expenses, Decimal('1.0')) * 100
-        else:
-            reached_goal_1 = 100
+        tracking["total_porcent"] = int((reached_goal_1 + reached_goal_2 + reached_goal_3) / 3)
 
-        thirty_percent_revenues = Decimal('0.3') * totalsRevenues
-        if totalsRevenues > 0:
-            reached_goal_2 = min(totalsInvestiment / thirty_percent_revenues, Decimal('1.0')) * 100
-        else:
-            reached_goal_2 = 100
-
+    elif currentProfile == TypeProfileEnumDTO.Investidor:
         tracking["porcent"].append({
             "id": 1,
-            "title": "50% das receitas sobre as despesas",
-            "porcent": int(reached_goal_1)
+            "title": "Você já atingiu o perfil mais alto",
+            "porcent": 100
         })
 
-        tracking["porcent"].append({
-            "id": 2,
-            "title": "30% de sua receita investida",
-            "porcent": int(reached_goal_2)
-        })
-
-        tracking["total_porcent"] = int((reached_goal_1 + reached_goal_2) / 2)
+        tracking["total_porcent"] = 100
 
     return tracking
+
+
