@@ -123,7 +123,7 @@ def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
                 PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date)
             ),
             or_(
-                PortfolioDatasInstallmentsMapped.is_paid == False,
+                PortfolioDatasInstallmentsMapped.is_paid == True,
                 PortfolioDatasInstallmentsMapped.is_paid == None
             ),
             PortfolioDatasInstallmentsMapped.id_user == idUser
