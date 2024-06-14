@@ -96,15 +96,15 @@ def invoicePaid(idInstallment: int):
 
 
 def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
-    with (Session(engine) as session):
+    with Session(engine) as session:
 
-        total_revenue = 0
+        total_revenues = 0
         total_expenses = 0
 
         monthStr = ParseToTypes.parseMonthToStr(month)
 
         start_date = datetime(year, int(monthStr[0]), 1, 0, 0, 0, 0)
-        end_date = datetime(year, int(monthStr[0]), int(monthStr[1]), 23, 59, 59, 9999)
+        end_date = datetime(year, int(monthStr[0]), int(monthStr[1]), 23, 59, 59, 999999)
 
         data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped). \
             join(PortfolioDatasMapped,
@@ -123,8 +123,11 @@ def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
                 PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date)
             ),
             or_(
-                PortfolioDatasInstallmentsMapped.is_paid == False,
-                PortfolioDatasInstallmentsMapped.is_paid == None
+                PortfolioDatasInstallmentsMapped.is_paid == True,
+                and_(
+                    PortfolioDatasInstallmentsMapped.is_paid == None,
+                    PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas
+                )
             ),
             PortfolioDatasInstallmentsMapped.id_user == idUser
         ). \
@@ -143,10 +146,10 @@ def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
 
         for data in unified_list:
             if data.tag == TagDatasPortfolio.Receitas:
-                total_revenue += data.value_installment
+                total_revenues += data.value_installment
             elif data.tag == TagDatasPortfolio.Receitas and data.is_recurring is True:
-                total_revenue += data.value
+                total_revenues += data.value
             elif data.tag == TagDatasPortfolio.Despesas:
                 total_expenses += data.value_installment
 
-        return total_revenue - total_expenses
+        return total_revenues - total_expenses

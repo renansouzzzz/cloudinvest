@@ -100,25 +100,25 @@ def calculateTrackingPercentages(totalsRevenues, totalsExpenses, totalsInvestime
 
         tracking["porcent"].append({
             "id": 1,
-            "title": "Receitas >= 20% das despesas",
+            "title": "Receitas maior ou igual a 20% das despesas",
             "porcent": int(reached_goal_1)
         })
 
         tracking["porcent"].append({
             "id": 2,
-            "title": "Despesas < 40% das receitas",
+            "title": "Despesas menor que 40% das receitas",
             "porcent": int(reached_goal_2)
         })
 
         tracking["porcent"].append({
             "id": 3,
-            "title": "Investimento > 20% das receitas",
+            "title": "Investimento maior que 20% das receitas",
             "porcent": int(reached_goal_3)
         })
 
         tracking["porcent"].append({
             "id": 4,
-            "title": "Receitas >= Despesas",
+            "title": "Receitas maior ou igual a despesas",
             "porcent": int(reached_goal_4)
         })
 
@@ -137,19 +137,19 @@ def calculateTrackingPercentages(totalsRevenues, totalsExpenses, totalsInvestime
 
         tracking["porcent"].append({
             "id": 1,
-            "title": "Investimento >= 60% das receitas",
+            "title": "Investimento maior ou igual a 60% das receitas",
             "porcent": int(reached_goal_1)
         })
 
         tracking["porcent"].append({
             "id": 2,
-            "title": "Receitas > 70% das despesas",
+            "title": "Receitas maior que 70% das despesas",
             "porcent": int(reached_goal_2)
         })
 
         tracking["porcent"].append({
             "id": 3,
-            "title": "Receitas > Despesas",
+            "title": "Receitas maior que as despesas",
             "porcent": int(reached_goal_3)
         })
 
