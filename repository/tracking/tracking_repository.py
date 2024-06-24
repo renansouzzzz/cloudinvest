@@ -14,38 +14,38 @@ from schemas.users.user import UserMapped
 
 def updateProfileByTracking(idUser: int):
     with Session(engine) as session:
-        dataRevenues = session.query(PortfolioDatasMapped).filter(
+        data_revenues = session.query(PortfolioDatasMapped).filter(
             and_(
                 PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas,
                 PortfolioDatasMapped.id_user == idUser
             )
         ).all()
 
-        dataExpenses = session.query(PortfolioDatasMapped).filter(
+        data_expenses = session.query(PortfolioDatasMapped).filter(
             and_(
                 PortfolioDatasMapped.tag == TagDatasPortfolio.Despesas,
                 PortfolioDatasMapped.id_user == idUser
             )
         ).all()
 
-        dataInvestiment = session.query(PortfolioDatasMapped).filter(
+        data_investiment = session.query(PortfolioDatasMapped).filter(
             and_(
                 PortfolioDatasMapped.tag == TagDatasPortfolio.Investimentos,
                 PortfolioDatasMapped.id_user == idUser
             )
         ).all()
 
-        typeProfileUser = session.query(UserMapped).filter(UserMapped.id == idUser).one_or_none()
+        type_profile_user = session.query(UserMapped).filter(UserMapped.id == idUser).one_or_none()
 
-        totalsInvestiment = Decimal(sum(data.value for data in dataInvestiment))
+        totals_investiment = Decimal(sum(data.value for data in data_investiment))
 
-        totalsRevenues = Decimal(sum(data.value for data in dataRevenues))
+        totals_revenues = Decimal(sum(data.value for data in data_revenues))
 
-        totalsExpenses = Decimal(sum(data.value for data in dataExpenses))
+        totals_expenses = Decimal(sum(data.value for data in data_expenses))
 
-        profiles = [Devedor(totalsRevenues, totalsExpenses, totalsInvestiment),
-                    Intermediario(totalsRevenues, totalsExpenses, totalsInvestiment),
-                    Investidor(totalsRevenues, totalsExpenses, totalsInvestiment)]
+        profiles = [Devedor(totals_revenues, totals_expenses, totals_investiment),
+                    Intermediario(totals_revenues, totals_expenses, totals_investiment),
+                    Investidor(totals_revenues, totals_expenses, totals_investiment)]
 
         profile_mappings = {
             Devedor: TypeProfileEnumDTO.Devedor,
@@ -53,7 +53,7 @@ def updateProfileByTracking(idUser: int):
             Investidor: TypeProfileEnumDTO.Investidor
         }
 
-        current_profile = typeProfileUser.type_profile
+        current_profile = type_profile_user.type_profile
         new_profile = current_profile
 
         for profile in profiles:
@@ -64,7 +64,7 @@ def updateProfileByTracking(idUser: int):
 
         change_profile = new_profile != current_profile
 
-        tracking = calculateTrackingPercentages(totalsRevenues, totalsExpenses, totalsInvestiment, new_profile)
+        tracking = calculateTrackingPercentages(totals_revenues, totals_expenses, totals_investiment, new_profile)
 
         response_body = {
             "change_profile": change_profile,
