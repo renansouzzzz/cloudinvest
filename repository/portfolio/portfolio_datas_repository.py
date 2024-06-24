@@ -58,7 +58,7 @@ def create(payload: PortfolioDatasMapped):
             session.commit()
             session.refresh(portfolio_datas)
 
-            if portfolio_datas.tag is TagDatasPortfolio.Receitas and portfolio_datas.installment is None and portfolio_datas.expiration_day is None:
+            if portfolio_datas.tag in [TagDatasPortfolio.Receitas, TagDatasPortfolio.Investimentos] and portfolio_datas.installment is None and portfolio_datas.expiration_day is None:
                 installment = PortfolioDatasInstallmentsMapped(
                     id_user=portfolio_datas.id_user,
                     id_port_datas=portfolio_datas.id,
