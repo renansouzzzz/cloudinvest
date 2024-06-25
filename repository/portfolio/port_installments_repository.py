@@ -131,7 +131,6 @@ def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
                 and_(
                     PortfolioDatasInstallmentsMapped.is_paid == None,
                     PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas,
-                    # PortfolioDatasMapped.tag == TagDatasPortfolio.Investimentos
                 )
             ),
             PortfolioDatasInstallmentsMapped.id_user == idUser
