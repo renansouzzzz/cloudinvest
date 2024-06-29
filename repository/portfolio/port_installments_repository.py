@@ -112,9 +112,11 @@ def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
 
         data = session.query(PortfolioDatasInstallmentsMapped, PortfolioDatasMapped). \
             join(PortfolioDatasMapped,
-                 and_(PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
-                      PortfolioDatasInstallmentsMapped.is_paid == False,
-                      PortfolioDatasMapped.id_user == idUser)). \
+                 and_(
+                     PortfolioDatasMapped.id == PortfolioDatasInstallmentsMapped.id_port_datas,
+                     PortfolioDatasMapped.id_user == idUser
+                 )
+                 ). \
             filter(
             or_(
                 and_(
@@ -123,6 +125,13 @@ def calculatePortfolioBalanceInstallments(idUser: int, month: str, year: int):
                     extract('month', PortfolioDatasMapped.created_at) <= int(monthStr[0])
                 ),
                 PortfolioDatasInstallmentsMapped.expiration_date.between(start_date, end_date)
+            ),
+            or_(
+                PortfolioDatasInstallmentsMapped.is_paid == False,
+                and_(
+                    PortfolioDatasInstallmentsMapped.is_paid == None,
+                    PortfolioDatasMapped.tag == TagDatasPortfolio.Receitas,
+                )
             ),
             PortfolioDatasInstallmentsMapped.id_user == idUser
         ). \
