@@ -170,7 +170,6 @@ def delete(idPortDatas: int):
         return "Informação deletada com sucesso!"
 
 
-
 def calculatePortfolioRevenuesTotals(idUser):
     with Session(engine) as session:
 

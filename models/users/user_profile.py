@@ -20,7 +20,7 @@ class UserProfile:
 
 class Devedor(UserProfile):
     def check_profile(self):
-        return Decimal(self.totals_expenses) > Decimal(self.totals_revenues) and Decimal(self.totals_investment) <= 0
+        return Decimal(self.totals_expenses) > Decimal(self.totals_revenues) and Decimal(self.totals_investment) == 0
 
 
 class Intermediario(UserProfile):
