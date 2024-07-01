@@ -88,7 +88,6 @@ def calculateTrackingPercentages(totals_revenues, totals_expenses, totals_invest
     if currentProfile == TypeProfileEnumDTO.Devedor:
         next_profile = TypeProfileEnumDTO.Intermediario
 
-        # Critérios para Intermediário
         goal_1 = Decimal(totals_revenues) > Decimal(totals_expenses)
         goal_2 = Decimal(totals_investment) < Decimal('0.3') * Decimal(totals_revenues)
 
@@ -112,7 +111,6 @@ def calculateTrackingPercentages(totals_revenues, totals_expenses, totals_invest
     elif currentProfile == TypeProfileEnumDTO.Intermediario:
         next_profile = TypeProfileEnumDTO.Investidor
 
-        # Critérios para Investidor
         goal_1 = Decimal(totals_revenues) > Decimal(totals_expenses)
         goal_2 = Decimal(totals_investment) >= Decimal('0.3') * Decimal(totals_revenues)
 
@@ -134,7 +132,7 @@ def calculateTrackingPercentages(totals_revenues, totals_expenses, totals_invest
         tracking["total_porcent"] = int((reached_goal_1 + reached_goal_2) / 2)
 
     elif currentProfile == TypeProfileEnumDTO.Investidor:
-        # Critérios para o perfil mais alto
+
         goal_1 = Decimal(totals_revenues) > Decimal(totals_expenses)
         goal_2 = Decimal(totals_investment) >= Decimal('0.3') * Decimal(totals_revenues)
 
