@@ -145,12 +145,6 @@ def calculateTrackingPercentages(totals_revenues, totals_expenses, totals_invest
             "porcent": int(reached_goal_1)
         })
 
-        tracking["porcent"].append({
-            "id": 2,
-            "title": "Investimento maior ou igual a 30% das receitas",
-            "porcent": int(reached_goal_2)
-        })
-
         tracking["total_porcent"] = int((reached_goal_1 + reached_goal_2) / 2)
 
     return tracking
