@@ -88,11 +88,8 @@ def calculateTrackingPercentages(totals_revenues, totals_expenses, totals_invest
     if currentProfile == TypeProfileEnumDTO.Devedor:
         next_profile = TypeProfileEnumDTO.Intermediario
 
-        goal_1 = Decimal(totals_revenues) > Decimal(totals_expenses)
-        goal_2 = Decimal(totals_investment) < Decimal('0.3') * Decimal(totals_revenues)
-
-        reached_goal_1 = 100 if goal_1 else 0
-        reached_goal_2 = 100 if goal_2 else 0
+        reached_goal_1 = 100 if Decimal(totals_revenues) > Decimal(totals_expenses) else 0
+        reached_goal_2 = 100 if Decimal(totals_investment) < Decimal('0.3') * Decimal(totals_revenues) else 0
 
         tracking["porcent"].append({
             "id": 1,
@@ -111,11 +108,8 @@ def calculateTrackingPercentages(totals_revenues, totals_expenses, totals_invest
     elif currentProfile == TypeProfileEnumDTO.Intermediario:
         next_profile = TypeProfileEnumDTO.Investidor
 
-        goal_1 = Decimal(totals_revenues) > Decimal(totals_expenses)
-        goal_2 = Decimal(totals_investment) >= Decimal('0.3') * Decimal(totals_revenues)
-
-        reached_goal_1 = 100 if goal_1 else 0
-        reached_goal_2 = 100 if goal_2 else 0
+        reached_goal_1 = 100 if Decimal(totals_revenues) > Decimal(totals_expenses) else 0
+        reached_goal_2 = 100 if Decimal(totals_investment) >= Decimal('0.3') * Decimal(totals_revenues) else 0
 
         tracking["porcent"].append({
             "id": 1,
@@ -133,11 +127,8 @@ def calculateTrackingPercentages(totals_revenues, totals_expenses, totals_invest
 
     elif currentProfile == TypeProfileEnumDTO.Investidor:
 
-        goal_1 = Decimal(totals_revenues) > Decimal(totals_expenses)
-        goal_2 = Decimal(totals_investment) >= Decimal('0.3') * Decimal(totals_revenues)
-
-        reached_goal_1 = 100 if goal_1 else 0
-        reached_goal_2 = 100 if goal_2 else 0
+        reached_goal_1 = 100 if Decimal(totals_revenues) > Decimal(totals_expenses) else 0
+        reached_goal_2 = 100 if Decimal(totals_investment) >= Decimal('0.3') * Decimal(totals_revenues) else 0
 
         tracking["porcent"].append({
             "id": 1,
