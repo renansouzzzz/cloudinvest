@@ -86,7 +86,6 @@ def calculateTrackingPercentages(totals_revenues, totals_expenses, totals_invest
     }
 
     if currentProfile == TypeProfileEnumDTO.Devedor:
-        next_profile = TypeProfileEnumDTO.Intermediario
 
         reached_goal_1 = 100 if Decimal(totals_revenues) > Decimal(totals_expenses) else 0
         reached_goal_2 = 100 if Decimal(totals_investment) < Decimal('0.3') * Decimal(totals_revenues) else 0
@@ -106,7 +105,6 @@ def calculateTrackingPercentages(totals_revenues, totals_expenses, totals_invest
         tracking["total_porcent"] = int((reached_goal_1 + reached_goal_2) / 2)
 
     elif currentProfile == TypeProfileEnumDTO.Intermediario:
-        next_profile = TypeProfileEnumDTO.Investidor
 
         reached_goal_1 = 100 if Decimal(totals_revenues) > Decimal(totals_expenses) else 0
         reached_goal_2 = 100 if Decimal(totals_investment) >= Decimal('0.3') * Decimal(totals_revenues) else 0
