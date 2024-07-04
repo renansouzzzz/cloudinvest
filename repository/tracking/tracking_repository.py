@@ -1,4 +1,3 @@
-import this
 from decimal import Decimal
 
 from sqlalchemy import and_
