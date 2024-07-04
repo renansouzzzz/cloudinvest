@@ -1,3 +1,4 @@
+import this
 from decimal import Decimal
 
 from sqlalchemy import and_
@@ -137,7 +138,3 @@ def calculateTrackingPercentages(totals_revenues, totals_expenses, totals_invest
         tracking["total_porcent"] = int((reached_goal_1 + reached_goal_2) / 2)
 
     return tracking
-
-
-
-
