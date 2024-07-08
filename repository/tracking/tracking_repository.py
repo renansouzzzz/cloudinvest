@@ -80,6 +80,7 @@ def updateProfileByTracking(idUser: int):
 
 
 def calculateTrackingPercentages(totals_revenues, totals_expenses, totals_investment, currentProfile):
+
     tracking = {
         "total_porcent": 0,
         "porcent": []
